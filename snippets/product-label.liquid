@@ -1,0 +1,14 @@
+{%- if product.available == false and settings.label_soldout_show -%}
+  <span class="product-label product-label--soldout"><span>{{ 'products.labels.sold_out' | t }}</span></span>
+{%- elsif product.compare_at_price_max > product.price and settings.label_sale_show -%}
+  <span class="product-label product-label--sale"><span>{{ 'products.labels.sale' | t }}</span></span>
+{%- elsif settings.label_remain_show and product.variants.size == 1 and product.variants.first.inventory_management == 'shopify' and product.variants.first.inventory_quantity > 0 and product.variants.first.inventory_quantity <= settings.prod_stock_warn_limit_int -%}
+  <span class="product-label product-label--low-inventory"><span>{{ 'products.labels.only_x_left' | t: quantity: product.variants.first.inventory_quantity }}</span></span>
+{%- elsif settings.label_new_in_show -%}
+  {%- assign now_s = 'now' | date: '%s' | plus: 0 -%}
+  {%- assign pub_s = product.created_at | date: '%s' | plus: 0 -%}
+  {%- assign diff_days = now_s | minus: pub_s | divided_by: 86400 -%}
+  {%- if diff_days < settings.prod_new_in_limit_int -%}
+    <span class="product-label product-label--new-in"><span>{{ 'products.labels.new_in' | t }}</span></span>
+  {%- endif -%}
+{%- endif -%}

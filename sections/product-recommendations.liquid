@@ -1,0 +1,109 @@
+{%- if section.settings.show_recommendations -%}
+  <div class="product-recommendations" data-product-id="{{ product.id }}" data-limit="{{ section.settings.products_per_row }}" data-url="{{ routes.product_recommendations_url }}">
+    {%- if recommendations.performed and recommendations.products_count > 0 -%}
+      <section class="border-top section products-section">
+        <div class="container">
+          <h2 class="section-heading">{{ section.settings.recommendations_title }}</h2>
+          <div class="product-grid row grid one-row" data-normheights=".image" data-normheights-inner="img">
+            {%- for product in recommendations.products -%}
+              {% render 'product-block', product: product %}
+            {%- endfor -%}
+
+            {%- for i in (1..section.settings.products_per_row) -%}
+              <div class="product-block product-block--flex-spacer flex column max-cols-{{ section.settings.products_per_row }} min-cols-2"></div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </section>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+
+{% javascript %}
+var loadProductRecommendationsIntoSection = function() {
+  // Look for an element with class 'product-recommendations'
+  var productRecommendationsSection = document.querySelector(".product-recommendations");
+  if (productRecommendationsSection === null) { return; }
+  // Read product id from data attribute
+  var productId = productRecommendationsSection.dataset.productId;
+  // Read limit from data attribute
+  var limit = productRecommendationsSection.dataset.limit;
+  // Build request URL
+  var requestUrl = productRecommendationsSection.dataset.url + "?section_id=product-recommendations&limit="+limit+"&product_id="+productId;
+  // Create request and submit it using Ajax
+  var request = new XMLHttpRequest();
+  request.open("GET", requestUrl);
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 300) {
+      var container = document.createElement("div");
+      container.innerHTML = request.response;
+      productRecommendationsSection.innerHTML = container.querySelector(".product-recommendations").innerHTML;
+      theme.loadProductGrid(productRecommendationsSection);
+    }
+  };
+  request.send();
+};
+// If your section has theme settings, the theme editor
+// reloads the section as you edit those settings. When that happens, the
+// recommendations need to be fetched again.
+// See https://help.shopify.com/en/themes/development/sections#understand-the-interaction-between-theme-javascript-and-the-theme-editor
+document.addEventListener("shopify:section:load", function(event) {
+  if (event.detail.sectionId === "product-recommendations") {
+    loadProductRecommendationsIntoSection();
+  }
+});
+// Fetching the recommendations on page load
+loadProductRecommendationsIntoSection();
+{% endjavascript %}
+
+
+{% schema %}
+  {
+    "name": "Product recommendations",
+    "settings": [
+      {
+        "type": "text",
+        "id": "recommendations_title",
+        "label": "Heading",
+        "default": "You may also like"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_recommendations",
+        "label": "Show recommendations",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "products_per_row",
+        "label": "Maximum number of recommended products",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          },
+          {
+            "value": "5",
+            "label": "5"
+          }
+        ],
+        "default": "4"
+      },
+      {
+        "type": "checkbox",
+        "id": "grid_show_vendor",
+        "label": "Show product vendor",
+        "default": false
+      }
+    ]
+  }
+{% endschema %}

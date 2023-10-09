@@ -1,0 +1,292 @@
+.clickyboxes li a.active {
+    background: none;
+}
+
+/* Customizer */
+/* Customizer */
+/* Customizer */
+.customizer:not(.active) {
+    display: none;
+}
+.customizer li a,
+.customizer .accordion.chevron a {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    border: none;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+    left: -20px;
+}
+.customizer .accordion.chevron a {
+    margin-left: 20px;
+}
+.customizer li a:hover {
+    background: transparent;
+}
+.customizer button {
+    background-color: #eee;
+    border-radius: 5px;
+    color: #555;
+    font-weight: 400;
+    text-align: center;
+    line-height: 1.5;
+    display: flex;
+    min-height: 4.5em;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 4%;
+    width: 100%;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: inherit;
+}
+
+/* Icons */
+/* Icons */
+/* Icons */
+.customizer li a::before,
+.customizer .accordion.chevron a.active::before {
+    content: "";
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 10px;
+    background-size: contain;
+}
+.customizer li a.active::after {
+    content: "\2713";
+    color: white;
+    background: #757575;
+}
+
+[data-value='handwriting']::before {
+    background: transparent url({{"customizer_Handwriting 1.1.png" | asset_url}}) no-repeat center center;
+}
+
+[data-value='house font']::before {   
+    background: transparent url({{"customizer_House font2.png" | asset_url}}) no-repeat center center;
+}
+
+[data-value='soundwave']::before {   
+    background: transparent url({{"customizer_Sound Wave.png" | asset_url}}) no-repeat center center;
+}
+
+[data-value='roman numeral date']::before {   
+    background: transparent url({{"customizer_Roman Numerals.png" | asset_url}}) no-repeat center center;
+}
+
+[data-value='special date']::before {   
+    background: transparent url({{"customizer_Special Date2.png" | asset_url}}) no-repeat center center;
+}
+
+
+.custom-feature-ui-single {
+ display: none;
+ margin-left: 53px;
+ margin-bottom: 20px;
+ padding: 25px;
+ /*background: #fff2ee;*/
+ background: white;
+ position: relative;
+}
+
+.custom-feature-ui-single__form-buttons {
+    display: flex;
+    margin-top: 5%;
+    /* justify-content: space-between; */
+    justify-content: center;
+}
+
+.custom-feature-ui-single__form-buttons .button {
+    cursor: pointer;
+    border-radius: 0;
+    border-color: #063148;
+    background: transparent;
+    font-size: 0.65em;
+    font-weight: bold;
+    width: 50%;
+    max-width: 100px;
+    color: black;
+}
+
+.active + .custom-feature-ui-single {
+ display: block;
+}
+.custom-feature-ui-single .note {
+    font-size: 12px;
+    text-transform: initial;
+    margin-top: 5%;
+    text-align: center;
+}
+.custom-feature-ui-single .loading-ajax {
+    display: none;
+    width: 62px;
+    height: 62px;
+    position: absolute;
+    top: 0;
+    left: -76px;
+    background: radial-gradient(circle, rgba(255,255,255,1) 35%, rgba(255,255,255,0) 68%);
+    padding: 7px;
+}
+.custom-feature-ui-single .loading-ajax.loading {
+    display: block
+}
+.custom-feature-ui-single .loader-parent {
+    position: relative
+}
+
+
+/* Handwriting */
+/* Handwriting */
+/* Handwriting */
+#upload-lift-handwriting .filepond--root {
+    margin-bottom: 0
+}
+
+/* House font */
+/* House font */
+/* House font */
+.template-cart .property .house-font,
+#house-font-input {
+    font-family: Modena;
+}
+.template-cart .property .house-font {
+    top: 6px;
+}
+#house-font-input {
+    font-size: 31px;
+    padding-top: 17px;
+    border: 1px solid #c9cdd2;
+    width: 100%;
+    text-align: center;
+    line-height: 27px;
+    padding-bottom: 0;
+    height: 80px;
+}
+
+/*Fingerprint*/
+/*Fingerprint*/
+/*Fingerprint*/
+[data-value="fingerprint"]:before{
+  background: transparent URL({{"fingerprint_icon_v2.png" | asset_url}}) no-repeat center center;
+}
+
+
+/* Soundwave */
+/* Soundwave */
+/* Soundwave */
+input[name="soundwave-audio-file"] {
+    display: none
+}
+[data-name="soundwave"] #soundwave-select-button {
+    background-color: #eee;
+    border-radius: 5px;
+    color: #555;
+    font-weight: 400;
+    text-align: center;
+    line-height: 1.5;
+    display: flex;
+    min-height: 4.5em;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 4%
+}
+[data-name="soundwave"] p.label {
+    font-size: .75em;
+    text-align: center;
+}
+[data-name="soundwave"] #waveform {
+
+    margin: 5% 0 5%;
+    /*width: 100%;
+    height: 90px;
+    position: relative;*/
+ /*   transition: opacity 1s; */
+ /*   opacity: 1; */
+}
+[data-name="soundwave"] #waveform.no-waveform {
+    background: transparent url({{"customizer_Sound Wave.png" | asset_url}}) no-repeat center center;
+    background-size: 40%;
+    opacity: .1;
+    top: 0;
+}
+[data-name="soundwave"] #waveform.no-waveform wave {
+    /*opacity: 0*/
+}
+[data-name="soundwave"] #waveform > p.hide {
+    display:none
+}
+[data-name="soundwave"] #waveform wave {
+    /*opacity: 1;
+    transition: opacity 1s;*/ 
+}
+[data-name="soundwave"] #waveform wave,
+[data-name="soundwave"] #uploadlift-soundwave {
+    /* display: none !important */
+}
+[data-name="soundwave"] #uploadlift-soundwave.hide {
+    display: none;
+}
+[data-name="soundwave"] img#uploadlift-soundwave-final {
+    margin: 5% auto;
+    height: 133px;
+    display: block;
+    transition: padding .3s;
+    cursor: pointer;
+}
+[data-name="soundwave"] img#uploadlift-soundwave-final:hover {
+    border: 1px dotted #ff00003d;
+    padding: 4%;
+}
+[data-name="soundwave"] img#uploadlift-soundwave-final.no-waveform {
+    background: transparent url({{"customizer_Sound Wave.png" | asset_url}}) no-repeat center center;
+    background-size: 40%;
+    opacity: .1;
+}
+[data-name="soundwave"] .result-image {
+    display: none
+}
+
+
+/* Roman Numeral Date */
+[data-name="roman numeral date"] [name="date"] {
+    text-transform: uppercase;
+    width: 100%;
+    min-width: 180px
+}
+#roman_numerals_date_result {
+    font-size: 26px;
+    line-height: 1.4em;
+    text-align: center;
+    margin-top: 5%;
+    height: 36px;
+    width: 100%;
+    border: none;
+    background: none;
+}
+.template-cart .roman-numeral-date {
+    font-weight: bold
+}
+
+/* Global properties[none] */
+#customization {
+    display: none;
+}
+
+/* 11/09/2021 - Temporary hiding of the customizer on READY TO SHIP products */
+/*
+body.product-love-signature-necklace .product-form .customizer,
+body.product-amor-signature-necklace .product-form .customizer,
+body.product-blessed-signature-necklace .product-form .customizer,
+body.product-loveyou-signature-necklace .product-form .customizer,
+#fb-root, #shopify-section-header, #shopify-section-footer,
+#smartbar-app, [data-section-id], .product-gallery {
+ display: none;
+}
+*/

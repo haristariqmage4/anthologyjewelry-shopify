@@ -1,0 +1,119 @@
+
+{% if request.design_mode %}
+<style>.pf-ph{font-size:14px!important;background:#fafafa;padding:20px;text-align:center;border:1px solid #f0f0f0;border-radius:4px;margin:15px}.pf-ph span{display:block;background:#e6f7ff;padding:8px 15px;border:1px solid #91d5ff}</style>
+{% endif %}
+{% if section.settings.section_id.size > 0 %}
+  {% assign snippet_name = section.settings.section_id %}
+  {% render 'pagefly-settings' %}
+  {% include snippet_name %}
+  {% else %}
+    
+    {% if request.design_mode %}
+      <div class="pf-ph">
+        <h3>PageFly Section</h3>
+        <span>No section selected. Please select your section from the list</span>
+      </div>
+    {% endif %}
+  
+{% endif %}
+
+{% schema %}
+{
+  "name": "PageFly Section",
+  "settings": [
+    {
+      "id": "section_id",
+      "type": "select",
+      "label": "Sections",
+      "options": [
+        {
+          "label": "Select section",
+          "value": ""
+        },
+        {
+          "label": "3 desktop",
+          "value": "pf-2e5aeb08"
+        },
+        {
+          "label": "3 mobile",
+          "value": "pf-7086525d"
+        },
+        {
+          "label": "1 RTS",
+          "value": "pf-eda76835"
+        },
+        {
+          "label": "1",
+          "value": "pf-b101a87d"
+        },
+        {
+          "label": "9",
+          "value": "pf-141d6121"
+        },
+        {
+          "label": "8 (reviews above this) ",
+          "value": "pf-4ae3ee47"
+        },
+        {
+          "label": "7 and 1/2",
+          "value": "pf-319c4c93"
+        },
+        {
+          "label": "5 mobile",
+          "value": "pf-28e30c73"
+        },
+        {
+          "label": "6 mobile AFTER BUTTON (video)",
+          "value": "pf-6f24065e"
+        },
+        {
+          "label": "5 desktop",
+          "value": "pf-cd9e1331"
+        },
+        {
+          "label": "10",
+          "value": "pf-43121c9a"
+        },
+        {
+          "label": "7",
+          "value": "pf-66c4d961"
+        },
+        {
+          "label": "6 mobile only (button) ",
+          "value": "pf-b7a4fe7a"
+        },
+        {
+          "label": "4",
+          "value": "pf-30e7c582"
+        },
+        {
+          "label": "2 desktop",
+          "value": "pf-57a49082"
+        },
+        {
+          "label": "2 mobile",
+          "value": "pf-b0e99594"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "Find and edit your section on the [section listing](https://apps.pagefly.io/sections)"
+    },
+    {
+      "type": "paragraph",
+      "content": "To add block to a section, please use the App Block element on PageFly section editor."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "PageFly Section"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,23 @@
+<script type="text/javascript" src="https://sdk.qikify.com/smartbar/app-v2.js" defer="defer"></script>
+<script id="qikify-smartbar-custom-script">let findStickyBar = setInterval(function() {
+        let stickyBar = $('.smartbar-bar').height();
+        if (stickyBar > 0) {
+          $('.toolbar').css('margin-top',stickyBar);
+          clearInterval(findStickyBar);
+        }
+      }, 200)
+      let checkSmartBar = setInterval(function() {
+        let stickyBar = $('.smartbar-bar')
+        if(stickyBar) {
+          var closeBtn = document.getElementsByClassName('smartbar-bar__close');
+          if(closeBtn) {
+            closeBtn[0].addEventListener('click', function() {
+                $('.toolbar').css('margin-top',0);
+          		clearInterval(checkSmartBar)
+            })
+          }
+        }
+      }, 200)</script>
+<style id="qikify-smartbar-custom-style">#smartbar-app .smartbar-wrapper{
+  z-index: 5 !important;
+}</style>

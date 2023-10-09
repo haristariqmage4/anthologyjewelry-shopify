@@ -1,0 +1,88 @@
+<section class="section border-top blog-section" data-section-type="featured-blog">
+  <div class="container">
+    {% if section.settings.blog == blank %}
+      {% render 'onboarding-blog-row' %}
+    {% else %}
+
+    {% assign blog = blogs[section.settings.blog] %}
+    <div class="opposing-items">
+      <h1 class="section-heading left">{{ section.settings.title | link_to: blog.url }}</h1>
+      <a class="more-link" href="{{ blog.url }}">{{ 'blogs.general.view_all' | t }}</a>
+    </div>
+    <div class="row">
+      {% if blog.articles.size > 0 %}
+
+      {% for article in blog.articles limit: 3 %}
+        {% render 'article-block' with 'third column', article: article, crop: section.settings.crop_image, crop_ratio: section.settings.crop_ratio %}
+      {% endfor %}
+
+      {% else %}
+
+      {{ 'homepage.onboarding.blog_empty' | t }}
+
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+
+{% schema %}
+  {
+    "name": "Blog posts",
+    "class": "homepage-section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Blog"
+      },
+      {
+        "type": "blog",
+        "id": "blog",
+        "label": "Blog"
+      },
+      {
+        "type": "checkbox",
+        "id": "crop_image",
+        "label": "Crop featured image",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "crop_ratio",
+        "label": "Crop style",
+        "options": [
+          {
+            "value": "1-1",
+            "label": "Square"
+          },
+          {
+            "value": "3-4",
+            "label": "Portrait"
+          },
+          {
+            "value": "16-9",
+            "label": "Landscape"
+          }
+        ],
+        "default": "16-9"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_author",
+        "label": "Show author",
+        "default": true
+      }
+    ],
+    "presets": [
+      {
+      "name": "Blog posts",
+          "category": "Blog",
+          "settings": {
+          }
+      }
+    ]
+  }
+{% endschema %}

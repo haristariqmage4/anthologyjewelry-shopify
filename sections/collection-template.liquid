@@ -1,0 +1,387 @@
+{%- if section.settings.header_height_fixed -%}
+{%- style -%}
+  {% if section.settings.header_mode == blank %}
+    .fullwidth-image {
+      height: {{ section.settings.header_height }}px;
+    }
+  {% elsif section.settings.header_mode == 'coloured-split' %}
+    .collection-header .header-text,
+    .collection-header .header-image {
+      min-height: {{ section.settings.header_height }}px;
+    }
+  {% endif %}
+{%- endstyle -%}
+{%- endif -%}
+
+<div data-section-type="collection-template">
+  {% paginate collection.products by section.settings.pagination_limit_int %}
+  <div class="container">
+    {% comment %}
+    <div class="inline-row cf">
+      {% render 'breadcrumbs' %}
+      <div class="inline-item right last">
+        {% render 'social-sharing', share_title: collection.title, share_permalink: collection.url, share_image: collection.image %}
+      </div>
+    </div>
+    {% endcomment %}
+
+    {%- if section.settings.header_mode == blank and collection.image -%}
+      {%- if section.settings.header_height_fixed -%}
+        <div class="fullwidth-image rimage-outer-wrapper lazyload fade-in"
+            data-bgset="{% render 'bgset', image: collection.image %}"
+            data-sizes="auto"
+            data-parent-fit="cover">
+          <noscript>
+            <div class="rimage-wrapper" style="padding-top:{{ 1 | divided_by: collection.image.aspect_ratio | times: 100 }}%">
+              <img src="{{ collection.image | img_url: '1024x1024' }}" alt="{{ collection.image.alt | escape }}" class="rimage__image">
+            </div>
+          </noscript>
+        </div>
+      {%- else -%}
+        <div class="fullwidth-image">
+          {%- render 'responsive-image', image: collection.image -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    <div class="collection-header {{ section.settings.header_mode }} {% if section.settings.header_height_fixed %}collection-header--fixed-height{% endif %} {% if collection.image %}has-image{% endif %} handle-{{ collection.handle }}">
+      <div class="header-text align-{{ section.settings.header_align }} {% unless section.settings.header_mode contains 'coloured-split' or section.settings.header_align == 'left' %}reading-column{% endunless %}">
+        <h1 class="page-title">{{ collection.title }}</h1>
+
+        {% if collection.description != "" %}
+        <div class="rte">{{ collection.description }}</div>
+        {% endif %}
+      </div>
+
+      {% if section.settings.header_mode contains 'coloured-split' and collection.image %}
+        <div class="header-image">
+          {%- if collection.image -%}
+            {% if section.settings.header_height_fixed %}
+              <div class="rimage-outer-wrapper lazyload fade-in"
+                  data-bgset="{% render 'bgset', image: collection.image %}"
+                  data-sizes="auto"
+                  data-parent-fit="cover">
+                <noscript>
+                  <div class="rimage-wrapper" style="padding-top:{{ 1 | divided_by: collection.image.aspect_ratio | times: 100 }}%">
+                    <img src="{{ collection.image | img_url: '1024x1024' }}" alt="{{ collection.image.alt | escape }}" class="rimage__image">
+                  </div>
+                </noscript>
+              </div>
+            {%- else -%}
+              {%- render 'responsive-image', image: collection.image -%}
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+      {% endif %}
+    </div>
+
+    <div id="collection" class="{% if section.settings.sidebar_show %}show-sidebar{% endif %}">
+      {% if section.settings.show_collection_tags and section.settings.collection_tags == 'boxes' %}
+      {% assign has_tags = false %}
+      {% capture tags_html %}
+      <ul class="tags plain">
+        <li class="tag{% unless current_tags.size > 0 %} active{% endunless %}">{{ 'collections.general.all_items' | t | link_to: collection.url }}</li>
+        {% for tag in collection.all_tags %}
+        {% unless tag contains 'meta-' %}
+        <li class="tag{% if current_tags contains tag %} active{% endif %}">
+          {{ tag | link_to_tag: tag }}
+        </li>
+        {% assign has_tags = true %}
+        {% endunless %}
+        {% endfor %}
+      </ul>
+      {% endcapture %}{% if has_tags %}{{ tags_html }}{% endif %}
+      {% endif %}
+
+      <div class="inline-row inline-row--spaced">
+        <div class="inline-item right last">
+          <span class="results-count desktop">{{ 'collections.general.results' | t: count: collection.products_count }}</span>
+
+          {% if section.settings.show_collection_tags and section.settings.collection_tags == 'dropdown' %}
+          {% if collection.url.size == 0 %}
+          {% assign collection_url = routes.all_products_collection_url %}
+          {% else %}
+          {% assign collection_url = collection.url %}
+          {% endif %}
+          {% assign has_tags = false %}
+          {% capture tags_html %}
+          <span class="tags filter">
+            <label for="filter-by">{{ 'collections.general.filter_by' | t }}:</label>
+            <select id="filter-by" class="redirect">
+              <option value="{{ collection_url }}">{{ 'collections.general.all_items' | t }}</option>
+              {% for tag in collection.all_tags %}
+              {% unless tag contains 'meta-' %}
+              <option value="{{ collection_url }}/{{ tag | handle }}" {% if current_tags contains tag %}selected="selected"{% endif %}>{{ tag }}</option>
+              {% assign has_tags = true %}
+              {% endunless %}
+              {% endfor %}
+            </select>
+          </span>
+          {% endcapture %}{% if has_tags %}{{ tags_html }}{% endif %}
+          {% endif %}
+
+          {% if section.settings.collection_sort and collection.products_count > 0 %}
+          <span class="filter">
+            <label for="sort-by">{{ 'collections.sorting.title' | t }}:</label>
+            <select id="sort-by" class="sort-by" data-default-value="{{ collection.sort_by | default: collection.default_sort_by  }}">
+              {% if section.settings.collection_sort_show_featured %}<option value="manual">{{ 'collections.sorting.featured' | t }}</option>{% endif %}
+              <option value="best-selling">{{ 'collections.sorting.best_selling' | t }}</option>
+              <option value="price-ascending">{{ 'collections.sorting.price_ascending' | t }}</option>
+              <option value="price-descending">{{ 'collections.sorting.price_descending' | t }}</option>
+              <option value="title-ascending">{{ 'collections.sorting.az' | t }}</option>
+              <option value="title-descending">{{ 'collections.sorting.za' | t }}</option>
+              <option value="created-ascending">{{ 'collections.sorting.date_ascending' | t }}</option>
+              <option value="created-descending">{{ 'collections.sorting.date_descending' | t }}</option>
+            </select>
+          </span>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if section.settings.sidebar_show %}
+      <div class="sidebar-cont cf">
+        <div class="sidebar">
+          <h2 class="h4">{{ 'collections.sidebar.title' | t }}</h2>
+          <ul class="plain">
+            {% for link in linklists[section.settings.sidebar_linklist].links %}
+              <li{% if link.active %} class="active"{% endif %}>
+                {% if link.links != blank %}
+                <h6 class="heading">{{ link.title | link_to: link.url }}</h6>
+                <ul class="plain">
+                  {% for child_link in link.links %}
+                  <li{% if child_link.active %} class="active"{% endif %}>
+                    {{ child_link.title | link_to: child_link.url }}
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                  {{ link.title | link_to: link.url }}
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+
+          {{ pages[section.settings.sidebar_page].content }}
+        </div>
+
+        <div class="beside-sidebar">
+          {% endif %}
+
+          {% if collection.products.size > 0 %}
+          <div class="product-list product-grid row grid {% if section.settings.coll_infiniscroll %}use-infinite-scroll{% endif %}" data-normheights=".image" data-normheights-inner="img">
+            {% capture product_blocks %}
+              {%- for product in collection.products -%}
+                {% render 'product-block', product: product %}
+              {%- endfor -%}
+            {% endcapture %}
+
+            {%- if product_blocks contains 'product-block__weight-value' -%}
+              {{ product_blocks | replace: '<div class="product-block__weight"></div>', '<div class="product-block__weight">&nbsp;</div>' }}
+            {%- else -%}
+              {{ product_blocks }}
+            {%- endif -%}
+
+            {%- for i in (1..section.settings.products_per_row) -%}
+              <div class="product-block product-block--flex-spacer flex column max-cols-{{ section.settings.products_per_row }} min-cols-2"></div>
+            {%- endfor -%}
+          </div>
+          {% else %}
+          <p>{{ 'collections.general.empty' | t }}</p>
+          {% endif %}
+
+          {% if section.settings.sidebar_show %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if paginate.pages > 1 %}
+  <div class="border-top">
+    <div class="container">
+      <div class="inline-row cf">
+        <div class="inline-item left"><div class="results-count results-count--lower">{{ 'collections.general.results' | t: count: collection.products_count }}</div></div>
+        <div class="inline-item right last">{% render 'pagination', paginate: paginate %}</div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% endpaginate %}
+</div>
+
+
+
+{% schema %}
+  {
+    "name": "Collection pages",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "grid_show_vendor",
+        "label": "Show product vendor",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Heading"
+      },
+      {
+        "type": "select",
+        "id": "header_align",
+        "label": "Text alignment",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "header_mode",
+        "label": "Layout",
+        "options": [
+          {
+            "value": "",
+            "label": "Banner"
+          },
+          {
+            "value": "coloured-split",
+            "label": "Color background"
+          },
+          {
+            "value": "text-only",
+            "label": "No image"
+          }
+        ],
+        "default": "coloured-split",
+        "info": "[Learn more](http:\/\/cleancanvas.co.uk\/support\/canopy)"
+      },
+      {
+        "type": "checkbox",
+        "id": "header_height_fixed",
+        "label": "Fixed height",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "header_height",
+        "min": 100,
+        "max": 800,
+        "step": 25,
+        "unit": "px",
+        "label": "Height",
+        "default": 200
+      },
+      {
+        "type": "header",
+        "content": "Sidebar"
+      },
+      {
+        "type": "checkbox",
+        "id": "sidebar_show",
+        "label": "Show sidebar",
+        "default": false
+      },
+      {
+        "type": "link_list",
+        "id": "sidebar_linklist",
+        "label": "Menu to use"
+      },
+      {
+        "type": "page",
+        "id": "sidebar_page",
+        "label": "Page content to show under menu",
+        "info": "Create a page containing images and\/or text to show in your sidebar, a great opportunity to cross-sell and add messages."
+      },
+      {
+        "type": "header",
+        "content": "Filters"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_collection_tags",
+        "label": "Show product tag filter",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "collection_tags",
+        "label": "Filter style",
+        "options": [
+          {
+            "value": "boxes",
+            "label": "Boxes"
+          },
+          {
+            "value": "dropdown",
+            "label": "Dropdown"
+          }
+        ],
+        "default": "dropdown"
+      },
+      {
+        "type": "checkbox",
+        "id": "collection_sort",
+        "label": "Show 'Sort by' dropdown",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "collection_sort_show_featured",
+        "label": "Show 'featured' in sort by dropdown",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Layout"
+      },
+      {
+        "type": "select",
+        "id": "products_per_row",
+        "label": "Maximum number of products per row",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          },
+          {
+            "value": "5",
+            "label": "5"
+          }
+        ],
+        "default": "4"
+      },
+      {
+        "type": "range",
+        "id": "pagination_limit_int",
+        "min": 12,
+        "max": 50,
+        "step": 1,
+        "label": "Number of products per page",
+        "default": 36
+      },
+      {
+        "type": "checkbox",
+        "id": "coll_infiniscroll",
+        "label": "Enable infinite-scroll",
+        "info": "Allows the visitor to continue loading more products to the same page without navigating to a new page.",
+        "default": false
+      }
+    ]
+  }
+{% endschema %}

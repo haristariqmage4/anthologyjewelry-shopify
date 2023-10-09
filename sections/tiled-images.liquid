@@ -1,0 +1,199 @@
+<style>
+{%- for block in section.blocks -%}
+  {%- unless block.settings.tint_color contains ',0' -%}
+  .section-id-{{ section.id }} .tile--{{ forloop.index }}::after {
+    background-color: {{ block.settings.tint_color }};
+    opacity: {{ block.settings.tint_opacity | divided_by: 100.00 }};
+  }
+  {%- endunless -%}
+  {%- if block.settings.title != blank or block.settings.text_line_2 != blank -%}
+    {%- assign overlay_bg_alpha = block.settings.overlay_bg | color_extract: 'alpha' -%}
+    .section-id-{{ section.id }} .tile--{{ forloop.index }} .overlay .inner {
+      color: {{ block.settings.overlay_color }};
+      {%- if overlay_bg_alpha > 0 -%}
+      background: {{ block.settings.overlay_bg | color_modify: 'alpha', 0.85 }};
+      {%- endif -%}
+    }
+    {%- if overlay_bg_alpha > 0 -%}
+      .section-id-{{ section.id }} .tile--{{ forloop.index }} a:hover .overlay .inner {
+        background: {{ block.settings.overlay_bg }};
+      }
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+</style>
+
+<section class="border-top section tile-section section-id-{{ section.id }}" data-section-type="tiled-images">
+  <div class="container">
+    <div class="tile-group" data-tiles-per-row="{{ section.settings.row_size_int }}" data-tiles-margin="{{ section.settings.image_margin }}">
+      {% for block in section.blocks %}
+      <div class="tile tile--{{ forloop.index }} {% unless block.settings.tint_color contains ',0' %}has-tint{% endunless %}" {{ block.shopify_attributes }}>
+        {% if block.settings.link_url != blank %}<a href="{{ block.settings.link_url | escape }}">{% endif %}
+
+        {% if block.settings.image == blank %}
+        <div class="placeholder-image landscape {% if block.settings.title != blank %}dark{% endif %}">
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+        {% else %}
+
+          {% render 'responsive-image', image: block.settings.image, manual: true %}
+
+        {% endif %}
+
+
+        {% if block.settings.title != blank or block.settings.text_line_2 != blank %}
+        <div class="overlay">
+          <div class="inner">
+            {% if block.settings.title != blank %}
+              <div class="filter-group__caption">{{ block.settings.title | escape }}</div>
+            {% endif %}
+            {% if block.settings.text_line_2 != blank %}
+              <div class="filter-group__sub-caption">{{ block.settings.text_line_2 | escape }}</div>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% if block.settings.link_url != blank %}</a>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+  {
+    "name": "Gallery",
+    "class": "homepage-section",
+    "max_blocks": 20,
+    "settings": [
+      {
+        "type": "range",
+        "id": "row_size_int",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "label": "Images per row",
+        "default": 3
+      },
+      {
+        "type": "select",
+        "id": "image_margin",
+        "label": "Spacing between images",
+        "options": [
+          {
+            "value": "0",
+            "label": "None"
+          },
+          {
+            "value": "0.1",
+            "label": "Very small"
+          },
+          {
+            "value": "0.25",
+            "label": "Small"
+          },
+          {
+            "value": "0.5",
+            "label": "Medium"
+          },
+          {
+            "value": "1",
+            "label": "Large"
+          }
+        ],
+        "default": "0.5"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "link_url",
+            "label": "Link"
+          },
+          {
+            "type": "header",
+            "content": "Overlay"
+          },
+          {
+            "type": "color",
+            "id": "tint_color",
+            "label": "Overlay",
+            "default": "#3d4246"
+          },
+          {
+            "type": "range",
+            "id": "tint_opacity",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Opacity",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Caption"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Line 1"
+          },
+          {
+            "type": "text",
+            "id": "text_line_2",
+            "label": "Line 2"
+          },
+          {
+            "type": "color",
+            "id": "overlay_color",
+            "label": "Color",
+            "default": "#464654"
+          },
+          {
+            "type": "color",
+            "id": "overlay_bg",
+            "label": "Background",
+            "default": "#ffffff"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Gallery",
+        "category": "Image",
+        "settings": {
+        },
+        "blocks": [
+          {
+            "type": "image"
+          },
+           {
+            "type": "image"
+          },
+           {
+            "type": "image"
+          },
+           {
+            "type": "image"
+          },
+           {
+            "type": "image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

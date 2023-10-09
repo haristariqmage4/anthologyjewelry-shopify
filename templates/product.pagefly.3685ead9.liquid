@@ -1,0 +1,51 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Raleway:400,500,600|Permanent+Marker:400|Quicksand:400&display=swap"><link rel="stylesheet" href="https://cdn.pagefly.io/pagefly/2.12.3/css/main-style.css?t=20200711180758"><link rel="stylesheet" href="{{ 'pagefly.3685ead9.scss.css' | asset_url }}">
+		  <div class="__pf" id="__pf"><div data-pf-type="Body" class="sc-pRgDJ fzXWJx pf-0ae9b4e5"><div data-pf-type="Layout" class="pf-c50ae9b4"><div data-pf-type="ProductPreview" class="sc-pJVLq dIjrXL pf-d779bcca">{% section 'product-template' %}
+{% section 'product-recommendations' %}
+
+<script type="application/json" id="ProductJson-{{ product.id }}">
+  {{ product | json }}
+</script>
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org/", 
+ {{ product.metafields.alireviews.seo_rating_review_key_script }}
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ shop.url | append: product.url | json }},
+  {%- if product.featured_media.preview_image -%}
+    {%- assign image_size = product.featured_media.preview_image.width | append: 'x' -%}
+    "image": [
+      {{ product.featured_media.preview_image.src | img_url: image_size | prepend: "https:" | json }}
+    ],
+  {%- endif -%}
+  "description": {{ product.description | strip_html | json }},
+  {%- if current_variant.sku != blank -%}
+    "sku": {{ current_variant.sku | json }},
+  {%- endif -%}
+  "brand": {
+    "@type": "Thing",
+    "name": {{ product.vendor | json }}
+  },
+  "offers": [
+    {%- for variant in product.variants -%}
+      {
+        "@type" : "Offer",
+        {%- if variant.sku != blank -%}
+          "sku": {{ variant.sku | json }},
+        {%- endif -%}
+        "availability" : "http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+        "price" : {{ variant.price | divided_by: 100.00 | json }},
+        "priceCurrency" : {{ cart.currency.iso_code | json }},
+        "url" : {{ shop.url | append: variant.url | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+ 					window.__pagefly_setting__={"baseURL":"https://apps.pagefly.io","analyticsURL":"https://analytics.pagefly.io","isBackend":false,"cdnURL":"https://cdn.pagefly.io","pageflyVersion":"2.12.3","shopDomain":"anthology-jewelry-company.myshopify.com","elementData":{"pf-6a06ccd8":{"listPosition":"bottom","limit":5,"height":"450px","spacing":"10px","listLayout":"slider","_type":"ProductImage"},"pf-34ff0415":{"listPosition":"bottom","limit":5,"height":"450px","spacing":"10px","listLayout":"slider","_type":"ProductImage"}},"pageTitle":"Drawing OLD","pageType":"product","pageId":"3685ead9-8f28-41ae-9d55-efe4c112623b","lazyLoad":false,"imageLazyLoad":false,"nativeImageLazyLoad":false,"trackingIDs":[]};
+					window.__pagefly_setting__.moneyFormat = {{shop.money_format | json}}
+				</script><script src="https://cdn.pagefly.io/pagefly/2.12.3/core/helper.js?t=20200711180758" defer></script>
+{% section 'alireviews-widget-25604' %}

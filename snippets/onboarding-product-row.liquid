@@ -1,0 +1,34 @@
+<div class="opposing-items">
+  <h1 class="section-heading left">{{ "homepage.onboarding.collection_title" | t }}</h1>
+
+  <span class="more-link">
+    {{ 'collections.general.view_all' | t }}
+  </span>
+</div>
+
+<div class="row grid {% if section.settings.row_count_int == '1' %}one-row{% endif %}">
+  {% assign product_limit = section.settings.products_per_row | times: section.settings.row_count_int %}
+  {% for i in (1..product_limit) %}
+
+  <div class="product-block layout-align-{{ settings.prod_block_layout }} flex column max-cols-{{ section.settings.products_per_row }} min-cols-2">
+    <div class="product-block__inner">
+      <div class="image">
+        <div class="inner">
+          {% capture placeholder_svg_name %}product-{{ forloop.index | modulo: 6 | plus: 1 }}{% endcapture %}
+          <div class="placeholder-image">{{ placeholder_svg_name | placeholder_svg_tag }}</div>
+        </div>
+      </div>
+
+      <div>
+        <span class="title">{{ "homepage.onboarding.product_name" | t: number: i }}</span>
+
+        <div class="price">
+          <span class="amount theme-money">{{ 1000 | money }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+
+</div>

@@ -1,0 +1,116 @@
+{% section 'article-template' %}
+
+
+{% paginate article.comments by 20 %}
+
+{% if blog.comments_enabled? %}
+<div class="border-top">
+  <div class="container">
+    <div id="comments" class="comments reading-column">
+
+      {% if article.comments.size > 0 or comment.created_at %}
+      <div class="section padless-bottom">
+        <h2 class="comment-title">{{ 'blogs.comments.title' | t }}</h2>
+
+        {% if comment and comment.created_at %}
+          {% render 'comment', comment: comment, article: article %}
+        {% endif %}
+
+        {% for comment in article.comments %}
+          {% render 'comment', comment: comment, article: article %}
+        {% endfor %}
+
+        {% render 'pagination', paginate: paginate %}
+      </div>
+      {% endif %}
+
+      <div id="comment-form" class="comment-form section">
+        {% form "new_comment", article %}
+        <h2 class="comment-title">{{ 'blogs.comments.form_title' | t }}</h2>
+
+        {% if form.posted_successfully? %}
+        {% if blog.moderated? %}
+        <p class="notification success">{{ 'blogs.comments.success_moderated' | t }}</p>
+        {% else %}
+        <p class="notification success">{{ 'blogs.comments.success' | t }}</p>
+        {% endif %}
+        {% endif %}
+
+        {% if form.errors %}
+        <div class="notification errors">
+          {{ 'blogs.comments.error' | t }}
+          {{ form.errors | default_errors }}
+        </div>
+        {% endif %}
+
+        <div class="input-row">
+          <label for="comment_author">{{ 'blogs.comments.name' | t }}</label>
+          <input type="text" id="comment_author" name="comment[author]" size="40" class="text" />
+        </div>
+        <div class="input-row">
+          <label for="comment_email">{{ 'blogs.comments.email' | t }}</label>
+          <input type="text" id="comment_email" name="comment[email]" size="40" class="text" />
+        </div>
+        <div class="input-row">
+          <label for="comment_body">{{ 'blogs.comments.message' | t }}</label>
+          <textarea id="comment_body" name="comment[body]" cols="40" rows="5" class="text">{{form.body}}</textarea>
+        </div>
+
+        {% if blog.moderated? %}
+        <p><em>{{ 'blogs.comments.moderated' | t }}</em></p>
+        {% endif %}
+
+        <div class="input-row">
+          <input type="submit" value="{{ 'blogs.comments.post' | t }}" class="alt" id="comment-submit" />
+        </div>
+
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endpaginate %}
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "articleBody": {{ article.content | strip_html | json }},
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": {{ shop.url | append: page.url | json }}
+    },
+    "headline": {{ article.title | json }},
+    {% if article.excerpt != blank %}
+      "description": {{ article.excerpt | strip_html | json }},
+    {% endif %}
+    {% if article.image %}
+      {% assign image_size = article.image.width | append: 'x' %}
+      "image": [
+        {{ article | img_url: image_size | prepend: "https:" | json }}
+      ],
+    {% endif %}
+    "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "dateCreated": {{ article.created_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "author": {
+      "@type": "Person",
+      "name": {{ article.author | json }}
+    },
+    "publisher": {
+      "@type": "Organization",
+      {% if settings.share_image %}
+        {% assign image_size = settings.share_image.width | append: 'x' %}
+        "logo": {
+          "@type": "ImageObject",
+          "height": {{ settings.share_image.height | json }},
+          "url": {{ settings.share_image | img_url: image_size | prepend: "https:" | json }},
+          "width": {{ settings.share_image.width | json }}
+        },
+      {% endif %}
+      "name": {{ shop.name | json }}
+    }
+  }
+</script>

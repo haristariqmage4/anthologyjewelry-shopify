@@ -1,0 +1,374 @@
+{% assign show_single_variant_details = true %}
+
+<div class="container" data-section-type="cart-template">
+
+  {% if cart.item_count == 0 %}
+
+  <h2 class="page-title">{{ 'cart.general.empty_title' | t }}</h2>
+  <div class="rte"><a href="{{ routes.all_products_collection_url }}">{{ 'cart.general.empty_subtext' | t }}</a></div>
+
+  {% else %}
+
+  <div class="reading-column">
+
+    <h1 class="page-title">{{ 'cart.general.title' | t }}</h1>
+
+    {% if section.settings.cart_notification_show and section.settings.cart_notification_pos != 'under-items' %}
+    <div class="notification">
+      <div class="rte">{{ section.settings.cart_notification_text }}</div>
+    </div>
+    {% endif %}
+
+    <form class="cart-form" action="{{ routes.cart_url }}" method="post" id="cartform">
+      <div class="spaced opposing-items">
+        {% for item in cart.items %}
+          {% if forloop.first %}
+          {% assign collection_url = item.product.collections.first.url %}
+          {% if collection_url == nil or collection_url == empty or collection_url contains 'frontpage' %}{% capture collection_url %}{{ routes.all_products_collection_url }}{% endcapture %}{% endif %}
+          {% endif %}
+        {% endfor %}
+        <a class="more-link left" href="{{ collection_url }}">{{ 'cart.general.continue' | t }}</a>
+
+        <button class="checkout-button checkout-button--upper" type="submit" name="checkout">{{ 'cart.general.checkout' | t }}</button>
+      </div>
+
+
+      <ul class="cart-items plain">
+        <li class="cart-item cart-items__heading border-bottom">
+          <span class="cart-item__description-and-image">{{ 'cart.label.description' | t }}</span>
+          <span class="cart-item__price">{{ 'cart.label.price' | t }}</span>
+          <span class="cart-item__quantity">{{ 'cart.label.quantity' | t }}</span>
+          <span class="cart-item__total">{{ 'cart.label.total' | t }}</span>
+        </li>
+        {% for item in cart.items %}
+          <li class="cart-item border-bottom cf">
+            <div class="cart-item__image">
+              <a class="image" href="{{ item.url }}">
+                <img src="{{ item | img_url: '100x' }}" alt="{{ item.title | escape }}"
+                      srcset="{{ item | img_url: '100x' }} 100w,
+                              {{ item | img_url: '200x' }} 200w" sizes="100px"/>
+              </a>
+				
+              {% comment %}
+              <!-- Uploaded Thumbnail-->
+              {% if item.properties['Handwriting'] %}
+                <img class="cart__image" src="{{ item.properties['Handwriting'] }}" >
+              {% endif %}
+              {%- else -%}
+                <img class="cart__image{% if item.image == null %} hide{% endif %}" src="{{ item | img_url: 'x190' }}" alt="{{ item.image.alt | escape }}" data-cart-item-image>
+              {% endif %}
+              {% endcomment %}
+            </div>
+
+            <div class="cart-item__not-image">
+              <div class="cart-item__description">
+                <div>{{ item.product.title | link_to: item.product.url }}</div>
+                {% if item.product.variants.size > 1 %}
+                <span class="variant">{{ item.variant.title }}</span>
+                {% elsif show_single_variant_details %}
+                {% unless item.product.has_only_default_variant %}
+                <span class="variant">{{ item.variant.title }}</span>
+                {% endunless %}
+                {% endif %}
+                {% comment %} Line Item Properties {% endcomment %}
+                {% for p in item.properties %}
+                  {% if p.first.first == '_' %}{% continue %}{%- endif -%}
+                  <div class="property">
+                    {% unless p.last == blank %}
+                    <span class="label">{{ p.first }}: </span>
+                    {%- if p.last contains 'cloudlift.app' -%}
+                      <a href="{{ p.last }}" target="_blank" class="cloudlift-upload-image-link" rel="lightbox">Click to view image</a>
+                    {% else %}
+                      <span class="{{ p.first | handleize }}" data-name="{{ p.first }}">{{ p.last }}</span>
+                    {%- else -%}
+                      {{ p.last }}
+                    {%- endif -%}
+                    <br />
+                    {% endunless %}
+                  </div>
+                  
+                {% endfor %}
+
+                {% if section.settings.show_backorder_text == true %}
+                  {% render 'backorder', product: item.product, variant: item.variant %}
+                {% endif %}
+                
+                {% if section.settings.cart_notification_show %}
+                <div class="cart_notification_item">{{ section.settings.cart_notification_text }}</div>
+                {% endif %}
+              </div>
+
+              <div class="cart-item__price">
+                <div class="cart-item__price__amount">
+                  {% if item.original_line_price > item.final_line_price %}
+                    <div class="struck-out-price theme-money">{{ item.original_price | money }}</div>
+                    <div class="cart-item__price-current reduced-price theme-money">{{ item.final_price | money }}</div>
+                  {% elsif item.variant.compare_at_price != blank and item.variant.price < item.variant.compare_at_price %}
+                    <div class="theme-money struck-out-price">{{ item.variant.compare_at_price | money }}</div>
+                    <div class="cart-item__price-current reduced-price theme-money">{{ item.final_price | money }}</div>
+                  {% else %}
+                    <div class="cart-item__price-current theme-money">{{ item.final_price | money }}</div>
+                  {% endif %}
+                </div>
+
+                {% render 'unit-price', variant: item %}
+              </div>
+
+              <div class="cart-item__quantity">
+                <div class="qty-adjuster">
+                  <div class="qty-adjuster__inner">
+                    <a class="qty-adjuster__down" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}">{% render 'svg-minus' %}</a>
+                    <input class="qty-adjuster__value" type="text" pattern="[0-9]*" name="updates[]" value="{{ item.quantity }}" aria-label="{{ 'cart.label.quantity' | t | escape }}">
+                    <a class="qty-adjuster__up"
+                        href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}"
+                        {% if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' and item.variant.inventory_quantity == item.quantity %}disabled{% endif %}
+                        >
+                      {%- render 'svg-plus' -%}
+                    </a>
+                  </div>
+                  <a class="qty-adjuster__remove" onclick="return confirm('{{ 'cart.general.confirm_remove' | t }}')" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0">{{ 'cart.general.remove' | t }}</a>
+                </div>
+              </div>
+
+              <div class="cart-item__total">
+                <div class="cart-item__total__amount">
+                  {% if item.original_line_price != item.final_line_price %}
+                    <div class="struck-out-price theme-money">{{ item.original_line_price | money }}</div>
+                    <div class="cart-item__price-current reduced-price theme-money">{{ item.final_line_price | money }}</div>
+                  {% elsif item.variant.compare_at_price != blank and item.variant.price < item.variant.compare_at_price %}
+                    <div class="struck-out-price theme-money">{{ item.variant.compare_at_price | times: item.quantity | money }}</div>
+                    <div class="cart-item__price-current reduced-price theme-money">{{ item.final_line_price | money }}</div>
+                  {% else %}
+                    <div class="cart-item__price-current theme-money">{{ item.final_line_price | money }}</div>
+                  {% endif %}
+                </div>
+
+                {% if item.line_level_discount_allocations.size > 0 %}
+                  <ul class="cart-discount-list">
+                  {% for discount_allocation in item.line_level_discount_allocations %}
+                    <li class="cart-discount">
+                      <div class="cart-discount__label">{{ discount_allocation.discount_application.title }}</div>
+                      <div class="cart-discount__amount theme-money">{{ discount_allocation.amount | money }}</div>
+                    </li>
+                  {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="svgs-container" ecl="true">
+        <div class="svg-item" ecl="true">
+          <img src="{{ 'Free_Shipping_Icon.png' | asset_url }}" width="50" />
+          <!--
+          <svg xmlns="http://www.w3.org/2000/svg" width="101" height="96" viewBox="0 0 101 96" fill="none" ecl="true">
+          	<path d="M69.0903 69.6C69.2817 69.5878 69.461 69.5018 69.5903 69.36L83.0703 55.88C83.2115 55.7545 83.2976 55.5785 83.3103 55.39V27.21C83.3102 27.0559 83.2633 26.9055 83.1758 26.7787C83.0883 26.6519 82.9643 26.5547 82.8203 26.5C82.738 26.4812 82.6525 26.4812 82.5703 26.5H40.9103C40.7223 26.5147 40.5471 26.6005 40.4203 26.74L26.9403 40.19C26.8008 40.3168 26.7149 40.4921 26.7003 40.68V68.87C26.6989 68.9671 26.7172 69.0635 26.754 69.1533C26.7908 69.2432 26.8454 69.3246 26.9146 69.3928C26.9837 69.461 27.0659 69.5145 27.1562 69.5501C27.2466 69.5857 27.3432 69.6027 27.4403 69.6H69.0903ZM81.9103 55.06L69.7603 67.13V41L81.9103 28.86V55.06ZM80.9103 27.87L68.7603 40H56.1203L68.2703 27.87H80.9103ZM66.2803 27.87L54.0003 40.19C53.8608 40.3168 53.7749 40.4921 53.7603 40.68V51.76L51.4503 50.26C51.3487 50.1727 51.2192 50.1247 51.0853 50.1247C50.9513 50.1247 50.8218 50.1727 50.7203 50.26L47.7203 52.26L44.7203 50.26C44.602 50.1625 44.4535 50.1091 44.3003 50.1091C44.147 50.1091 43.9985 50.1625 43.8803 50.26L41.5803 51.76V41L54.7203 27.87H66.2803ZM41.2803 27.87H52.7303L40.6603 40H29.0903L41.2803 27.87ZM28.1003 41.42H40.1803V53.08C40.1765 53.2118 40.209 53.3422 40.2742 53.4568C40.3395 53.5714 40.435 53.6659 40.5503 53.73C40.6678 53.7818 40.7966 53.8026 40.9244 53.7903C41.0522 53.778 41.1748 53.7332 41.2803 53.66L44.2303 51.72L47.2303 53.72C47.3318 53.8073 47.4613 53.8553 47.5953 53.8553C47.7292 53.8553 47.8587 53.8073 47.9603 53.72L50.9603 51.72L53.9603 53.72C54.0678 53.7981 54.1974 53.8401 54.3303 53.8401C54.4632 53.8401 54.5927 53.7981 54.7003 53.72C54.8078 53.6522 54.8957 53.5574 54.9553 53.4452C55.0149 53.3329 55.0442 53.207 55.0403 53.08V41.42H68.2203V67.71H67.9403V68.13H28.1003V41.42Z" fill="#474747" ecl="true"></path>
+          	<path d="M27.5097 30.94C26.5 30.9374 25.5324 30.5351 24.8185 29.8212C24.1046 29.1072 23.7023 28.1397 23.6997 27.13C23.7024 26.9407 23.6304 26.758 23.4994 26.6214C23.3684 26.4848 23.1889 26.4052 22.9997 26.4C22.9026 26.3973 22.806 26.4142 22.7156 26.4498C22.6253 26.4854 22.5431 26.539 22.474 26.6072C22.4048 26.6753 22.3502 26.7568 22.3134 26.8467C22.2765 26.9365 22.2583 27.0329 22.2597 27.13C22.2597 28.1387 21.8596 29.1063 21.1473 29.8205C20.4349 30.5348 19.4684 30.9374 18.4597 30.94C18.3559 30.9279 18.2508 30.9379 18.1512 30.9693C18.0517 31.0007 17.9598 31.0528 17.8818 31.1222C17.8038 31.1916 17.7414 31.2768 17.6986 31.3721C17.6559 31.4673 17.6338 31.5706 17.6338 31.675C17.6338 31.7794 17.6559 31.8827 17.6986 31.9779C17.7414 32.0732 17.8038 32.1584 17.8818 32.2278C17.9598 32.2972 18.0517 32.3493 18.1512 32.3807C18.2508 32.4121 18.3559 32.4221 18.4597 32.41C19.4684 32.4126 20.4349 32.8152 21.1473 33.5295C21.8596 34.2437 22.2597 35.2113 22.2597 36.22C22.2512 36.3212 22.2641 36.423 22.2978 36.5188C22.3314 36.6146 22.3849 36.7022 22.4548 36.7759C22.5247 36.8496 22.6094 36.9076 22.7033 36.9462C22.7972 36.9849 22.8982 37.0032 22.9997 37C23.0963 37.0028 23.1924 36.9858 23.2823 36.9501C23.3721 36.9144 23.4537 36.8607 23.522 36.7923C23.5903 36.724 23.644 36.6424 23.6797 36.5526C23.7154 36.4628 23.7324 36.3666 23.7297 36.27C23.7323 35.2603 24.1346 34.2928 24.8485 33.5788C25.5624 32.8649 26.53 32.4626 27.5397 32.46C27.7198 32.4389 27.886 32.3525 28.0066 32.217C28.1272 32.0815 28.1938 31.9064 28.1938 31.725C28.1938 31.5436 28.1272 31.3685 28.0066 31.233C27.886 31.0975 27.7198 31.011 27.5397 30.99L27.5097 30.94ZM24.2797 32C23.8802 32.3079 23.5238 32.6677 23.2197 33.07L22.8597 33.5L22.5497 33.04C22.243 32.6453 21.8829 32.2953 21.4797 32L20.9997 31.62L21.5197 31.31C21.9243 31.0565 22.2662 30.7146 22.5197 30.31L22.8697 29.79L23.2097 30.31C23.5175 30.7094 23.8774 31.0659 24.2797 31.37L24.7097 31.73L24.2797 32Z" fill="#474747" ecl="true"></path>
+          </svg> 
+			-->
+          <p ecl="true">FREE SHIPPING ON U.S. ORDERS $50+</p>
+        </div>
+        <div class="svg-item" ecl="true">
+          <!--
+          <svg xmlns="http://www.w3.org/2000/svg" width="101" height="96" viewBox="0 0 101 96" fill="none" ecl="true">
+          	<path d="M56.5202 77.34C55.2947 77.2033 54.1244 76.7558 53.1202 76.04C52.3372 75.499 51.4412 75.1433 50.5002 75C49.5626 75.1313 48.6669 75.4731 47.8802 76C46.5702 76.76 45.2202 77.55 43.8202 77.23C42.4202 76.91 41.4802 75.58 40.6102 74.29C40.1618 73.498 39.5437 72.815 38.8002 72.29C37.8901 72.03 36.933 71.9787 36.0002 72.14C34.4802 72.25 32.9002 72.38 31.7702 71.47C30.6402 70.56 30.3902 68.98 30.1602 67.47C30.1123 66.5352 29.8561 65.623 29.4102 64.8C28.7156 64.1878 27.8918 63.74 27.0002 63.49C25.5702 62.93 24.0802 62.35 23.4402 61.03C22.8002 59.71 23.2802 58.22 23.7302 56.76C24.1014 55.8893 24.269 54.9453 24.2202 54C23.8638 53.1611 23.3239 52.4128 22.6402 51.81C21.6402 50.73 20.4902 49.5 20.4902 48C20.4902 46.5 21.6302 45.27 22.6402 44.19C23.3239 43.5872 23.8638 42.8389 24.2202 42C24.2722 41.0555 24.108 40.1115 23.7402 39.24C23.2902 37.78 22.8202 36.24 23.4502 34.97C24.0802 33.7 25.5802 33.07 27.0102 32.51C27.9054 32.2614 28.7327 31.8136 29.4302 31.2C29.8761 30.377 30.1323 29.4648 30.1802 28.53C30.4102 27.02 30.6402 25.45 31.7902 24.53C32.9402 23.61 34.5002 23.75 36.0202 23.86C36.9462 24.0235 37.8973 23.9722 38.8002 23.71C39.5437 23.185 40.1618 22.502 40.6102 21.71C41.4802 20.43 42.3702 19.1 43.8202 18.77C45.2702 18.44 46.5702 19.24 47.8802 20C48.6588 20.5588 49.5551 20.9317 50.5002 21.09C51.4454 20.9317 52.3417 20.5588 53.1202 20C54.4302 19.24 55.7802 18.46 57.1802 18.77C58.5802 19.08 59.5202 20.42 60.3902 21.71C60.8387 22.502 61.4568 23.185 62.2002 23.71C63.1032 23.9722 64.0543 24.0235 64.9802 23.86C66.5002 23.75 68.0702 23.62 69.2102 24.53C70.3502 25.44 70.5902 27.02 70.8202 28.53C70.8681 29.4648 71.1244 30.377 71.5702 31.2C72.2707 31.8149 73.1016 32.2628 74.0002 32.51C75.4302 33.07 76.9202 33.64 77.5602 34.97C78.2002 36.3 77.7202 37.78 77.2702 39.24C76.899 40.1107 76.7314 41.0547 76.7802 42C77.1367 42.8389 77.6766 43.5872 78.3602 44.19C79.3602 45.27 80.5102 46.5 80.5102 48C80.5102 49.5 79.3702 50.73 78.3602 51.81C77.6786 52.4146 77.139 53.1625 76.7802 54C76.7283 54.9445 76.8924 55.8885 77.2602 56.76C77.7102 58.22 78.1802 59.76 77.5502 61.03C76.9202 62.3 75.4202 62.93 73.9902 63.49C73.0942 63.7363 72.2664 64.1844 71.5702 64.8C71.1244 65.623 70.8681 66.5352 70.8202 67.47C70.5902 68.98 70.3602 70.55 69.2102 71.47C68.0602 72.39 66.5002 72.26 64.9702 72.14C64.0476 71.977 63.0999 72.0283 62.2002 72.29C61.4568 72.815 60.8387 73.498 60.3902 74.29C59.5202 75.57 58.6302 76.9 57.1802 77.23C56.965 77.2912 56.7436 77.3281 56.5202 77.34V77.34ZM50.5202 73.15C51.7742 73.2915 52.9716 73.7491 54.0002 74.48C55.0002 75.07 56.0002 75.68 56.7602 75.48C57.5202 75.28 58.2102 74.29 58.8802 73.3C59.4729 72.2113 60.3377 71.2948 61.3902 70.64C62.574 70.2106 63.8492 70.0968 65.0902 70.31C66.2702 70.41 67.4902 70.5 68.0902 70.03C68.6902 69.56 68.8602 68.35 69.0902 67.17C69.1552 65.92 69.5409 64.7077 70.2102 63.65C71.0921 62.764 72.1873 62.12 73.3902 61.78C74.5002 61.35 75.6402 60.9 75.9702 60.22C76.3002 59.54 75.9702 58.39 75.5902 57.22C75.0946 56.0815 74.8917 54.837 75.0002 53.6C75.4017 52.4466 76.0899 51.4142 77.0002 50.6C77.8202 49.72 78.6702 48.81 78.6702 48.02C78.6702 47.23 77.8302 46.32 77.0002 45.44C76.0899 44.6258 75.4017 43.5935 75.0002 42.44C74.856 41.1825 75.035 39.909 75.5202 38.74C75.8702 37.62 76.2302 36.46 75.9102 35.74C75.5902 35.02 74.4302 34.61 73.3202 34.18C72.119 33.8427 71.0265 33.1982 70.1502 32.31C69.4665 31.2607 69.07 30.0505 69.0002 28.8C68.8202 27.63 68.6402 26.41 68.0002 25.94C67.3602 25.47 66.2002 25.57 65.0002 25.66C63.759 25.8682 62.4851 25.7546 61.3002 25.33C60.2477 24.6752 59.3829 23.7587 58.7902 22.67C58.1202 21.67 57.4302 20.67 56.6702 20.49C55.9102 20.31 54.9202 20.93 53.9102 21.49C52.8709 22.2288 51.6585 22.6869 50.3902 22.82C49.1703 22.6729 48.0057 22.2263 47.0002 21.52C46.0002 20.93 45.0002 20.33 44.2402 20.52C43.4802 20.71 42.7902 21.71 42.1202 22.7C41.5276 23.7887 40.6628 24.7052 39.6102 25.36C38.4265 25.7895 37.1513 25.9032 35.9102 25.69C34.7302 25.6 33.5102 25.5 32.9102 25.97C32.3102 26.44 32.1402 27.65 31.9602 28.83C31.8968 30.0818 31.5073 31.2952 30.8302 32.35C29.954 33.2382 28.8614 33.8827 27.6602 34.22C26.5502 34.65 25.4102 35.1 25.0702 35.78C24.7302 36.46 25.0702 37.61 25.4602 38.78C25.9389 39.9229 26.1245 41.1672 26.0002 42.4C25.5988 43.5535 24.9105 44.5858 24.0002 45.4C23.1702 46.28 22.3302 47.19 22.3302 47.98C22.3302 48.77 23.1702 49.68 24.0002 50.56C24.9105 51.3742 25.5988 52.4066 26.0002 53.56C26.1445 54.8175 25.9655 56.091 25.4802 57.26C25.1302 58.38 24.7702 59.54 25.0902 60.2C25.4102 60.86 26.5702 61.34 27.6802 61.77C28.8814 62.1073 29.974 62.7518 30.8502 63.64C31.5423 64.7038 31.9392 65.9324 32.0002 67.2C32.1802 68.38 32.3602 69.59 32.9502 70.06C33.5402 70.53 34.7502 70.43 35.9502 70.34C37.1915 70.1318 38.4654 70.2455 39.6502 70.67C40.7028 71.3248 41.5676 72.2413 42.1602 73.33C42.8302 74.33 43.5202 75.33 44.2802 75.51C45.0402 75.69 46.0302 75.07 47.0402 74.51C48.0593 73.77 49.2501 73.302 50.5002 73.15H50.5202Z" fill="#474747" ecl="true"></path>
+          	<path d="M61.79 39.48L48.43 57.59C48.3529 57.6954 48.2541 57.783 48.1403 57.8468C48.0264 57.9107 47.9001 57.9493 47.77 57.96H47.7C47.4598 57.956 47.2304 57.8593 47.06 57.69L39.3 49.93C39.1582 49.7552 39.0862 49.5342 39.0979 49.3095C39.1096 49.0848 39.2041 48.8723 39.3632 48.7132C39.5223 48.5541 39.7347 48.4596 39.9594 48.4479C40.1842 48.4362 40.4052 48.5082 40.58 48.65L47.58 55.65L60.33 38.41C60.4735 38.2168 60.6877 38.0884 60.9257 38.0528C61.1638 38.0172 61.4062 38.0773 61.6 38.22C61.6953 38.2902 61.7758 38.3784 61.837 38.4798C61.8981 38.5811 61.9387 38.6935 61.9563 38.8106C61.974 38.9276 61.9684 39.047 61.9398 39.1619C61.9113 39.2767 61.8604 39.3848 61.79 39.48V39.48Z" fill="#474747" ecl="true"></path>
+          </svg>
+			-->
+          <img src="{{ 'Happiness_Guarantee_Icon.png' | asset_url }}" width="50" />
+          <p ecl="true">Happiness Guarantee</p>
+        </div>
+      </div>
+      <style>
+        .svgs-container {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0px;
+    flex-wrap: wrap; max-width: 600px;
+    margin: 0 auto;}
+    @media only screen and (max-width: 550px) {
+      .svgs-container {
+        flex-wrap: nowrap;
+        flex-direction: column;
+        align-items: flex-start; } }
+    .svgs-container .svg-item {
+      display: flex;
+      align-items: center; }
+      .svgs-container .svg-item p {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #76b2ab;
+        line-height: 1.25;
+        letter-spacing: 1.29px;
+        font-weight: 600; margin-bottom: 0;}
+      .svgs-container .svg-item svg {
+        min-width: 45px;
+        min-height: 45px; }
+        .svgs-container .svg-item svg path {
+          fill: #76b2ab; }
+      </style>
+      
+      <div class="space-under light-space-above align-right">
+        <input type="submit" class="alt" id="update-cart" name="update" value="{{ 'cart.general.update' | t }}" />
+      </div>
+		
+      {% comment %}
+      {% if section.settings.cart_notification_show and section.settings.cart_notification_pos == 'under-items' %}
+      <div class="notification">
+        <div class="rte">{{ section.settings.cart_notification_text }}</div>
+      </div>
+      {% endif %}
+      {% endcomment %}
+
+      <div class="row spaced-row">
+        <div class="half column">
+          {% if section.settings.show_notes %}
+            <label class="cart-note-label" for="note">{{ 'cart.label.note' | t }}</label>
+            <textarea id="note" name="note" rows="10" cols="50">{{ cart.note }}</textarea>
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+
+        <div class="half column align-right">
+          {%- if cart.cart_level_discount_applications != blank -%}
+            <ul class="cart-discount-list cart-discount-list--by-subtotal">
+              {%- for discount_application in cart.cart_level_discount_applications -%}
+                <li class="cart-discount cart-discount--inline">
+                  <span class="cart-discount__label">{{ discount_application.title }}</span>
+                  <span class="cart-discount__amount theme-money">{{ discount_application.total_allocated_amount | money }}</span>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          <div class="cart-subtotal">
+            <label class="cart-subtotal-label h2" for="checkout">{{ 'cart.general.subtotal' | t }}:</label>
+            <span class="theme-money h2">{{ cart.total_price | money }}</span>
+          </div>
+
+          {% if section.settings.show_tax_and_shipping %}
+            {%- capture taxes_shipping_checkout -%}
+              {%- if shop.taxes_included and shop.shipping_policy.body != blank -%}
+                {{ 'cart.general.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+              {%- elsif shop.taxes_included -%}
+                {{ 'cart.general.taxes_included_but_shipping_at_checkout' | t }}
+              {%- elsif shop.shipping_policy.body != blank -%}
+                {{ 'cart.general.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+              {%- else -%}
+                {{ 'cart.general.taxes_and_shipping_at_checkout' | t }}
+              {%- endif -%}
+            {%- endcapture -%}
+
+            <div class="cart-policies rte lightly-spaced-row">{{ taxes_shipping_checkout }}</div>
+          {% endif %}
+
+          <div class="cart-buttons">
+            <button class="checkout-button checkout-button--lower" type="submit" name="checkout">{{ 'cart.general.checkout' | t }}</button>
+          </div>
+
+          {% if section.settings.show_additional_checkout_buttons and additional_checkout_buttons %}
+          <div class="additional-checkout-buttons">
+            {{ content_for_additional_checkout_buttons }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </form>
+
+    {% render 'shipping-calculator' %}
+
+  </div>
+
+  {% endif %}
+
+</div>
+
+
+{% schema %}
+  {
+    "name": "Cart page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_notes",
+        "label": "Enable cart notes",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_tax_and_shipping",
+        "label": "Show tax and shipping information",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_additional_checkout_buttons",
+        "label": "Show additional checkout options",
+        "default": true,
+        "info": "Display other gateways and quick checkout buttons. [Read more](https://help.shopify.com/en/manual/payments/accelerated-checkouts)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_backorder_text",
+        "label": "Show backorder text",
+        "default": true,
+        "info": "Only shows for products which use Shopify inventory tracking and are available to purchase when out of stock."
+      },
+      {
+        "type": "header",
+        "content": "Cart announcement"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_notification_show",
+        "label": "Show announcement",
+        "default": false
+      },
+      {
+        "type": "richtext",
+        "id": "cart_notification_text",
+        "label": "Text"
+      },
+      {
+        "type": "select",
+        "id": "cart_notification_pos",
+        "label": "Position",
+        "default": "",
+        "options": [
+          {
+            "value": "",
+            "label": "Under page title"
+          },
+          {
+            "value": "under-items",
+            "label": "Under items"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Shipping estimates calculator"
+      },
+      {
+        "type": "checkbox",
+        "id": "shipping_calculator",
+        "label": "Show shipping calculator",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "shipping_calculator_default_country",
+        "label": "Default country selection",
+        "default": "United States"
+      },
+      {
+        "type": "paragraph",
+        "content": "If your customer is logged-in, the country in their default shipping address will be selected."
+      }
+    ]
+  }
+{% endschema %}

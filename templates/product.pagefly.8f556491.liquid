@@ -1,0 +1,116 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Raleway:400,500,600|Permanent+Marker:400|Quicksand:400&display=swap"><link rel="stylesheet" href="https://cdn.pagefly.io/pagefly/2.12.3/css/main-style.css?t=20200709180723"><link rel="stylesheet" href="{{ 'pagefly.8f556491.scss.css' | asset_url }}">
+		  {% if product_4593526112391 == null %}{%- assign product_4593526112391 = all_products['handwritten-anthology-bracelet'] -%}{% endif %} {% if product_4593596694663 == null %}{%- assign product_4593596694663 = all_products['handwritten-anthology-necklace'] -%}{% endif %}<script>
+	window.__pageflyProducts = window.__pageflyProducts || {};
+	window.__pageflyProducts["4593526112391"] = {
+					id: {{product_4593526112391.id | json }},
+					handle: {{product_4593526112391.handle | json }},
+					title: {{product_4593526112391.title | json }},
+					type: {{product_4593526112391.type | json }},
+					url: {{product_4593526112391.url | json }},
+					vendor: {{product_4593526112391.vendor | json }},
+					variants: {{product_4593526112391.variants | json }},
+					options: {{product_4593526112391.options | json }},
+					media: {{product_4593526112391.media | json }},
+					first_available_variant: {{product_4593526112391.first_available_variant | json }},
+					has_only_default_variant: {{product_4593526112391.has_only_default_variant | json }},
+					options_with_values: {{product_4593526112391.options_with_values | json }},
+					selected_variant: {{product_4593526112391.selected_variant | json }},
+					selected_or_first_available_variant: {{product_4593526112391.selected_or_first_available_variant | json }},
+					tags: {{product_4593526112391.tags | json }},
+					template_suffix: {{product_4593526112391.template_suffix | json }},
+					featured_image: {{product_4593526112391.featured_image | json }},
+					featured_media: {{product_4593526112391.featured_media | json }},
+					images: {{product_4593526112391.images | json }}
+				};
+window.__pageflyProducts["4593596694663"] = {
+					id: {{product_4593596694663.id | json }},
+					handle: {{product_4593596694663.handle | json }},
+					title: {{product_4593596694663.title | json }},
+					type: {{product_4593596694663.type | json }},
+					url: {{product_4593596694663.url | json }},
+					vendor: {{product_4593596694663.vendor | json }},
+					variants: {{product_4593596694663.variants | json }},
+					options: {{product_4593596694663.options | json }},
+					media: {{product_4593596694663.media | json }},
+					first_available_variant: {{product_4593596694663.first_available_variant | json }},
+					has_only_default_variant: {{product_4593596694663.has_only_default_variant | json }},
+					options_with_values: {{product_4593596694663.options_with_values | json }},
+					selected_variant: {{product_4593596694663.selected_variant | json }},
+					selected_or_first_available_variant: {{product_4593596694663.selected_or_first_available_variant | json }},
+					tags: {{product_4593596694663.tags | json }},
+					template_suffix: {{product_4593596694663.template_suffix | json }},
+					featured_image: {{product_4593596694663.featured_image | json }},
+					featured_media: {{product_4593596694663.featured_media | json }},
+					images: {{product_4593596694663.images | json }}
+				};
+window.__pageflyProducts["{{product.id}}"] = {
+					id: {{product.id | json }},
+					handle: {{product.handle | json }},
+					title: {{product.title | json }},
+					type: {{product.type | json }},
+					url: {{product.url | json }},
+					vendor: {{product.vendor | json }},
+					variants: {{product.variants | json }},
+					options: {{product.options | json }},
+					media: {{product.media | json }},
+					first_available_variant: {{product.first_available_variant | json }},
+					has_only_default_variant: {{product.has_only_default_variant | json }},
+					options_with_values: {{product.options_with_values | json }},
+					selected_variant: {{product.selected_variant | json }},
+					selected_or_first_available_variant: {{product.selected_or_first_available_variant | json }},
+					tags: {{product.tags | json }},
+					template_suffix: {{product.template_suffix | json }},
+					featured_image: {{product.featured_image | json }},
+					featured_media: {{product.featured_media | json }},
+					images: {{product.images | json }}
+				};
+	</script><div class="__pf" id="__pf"><div data-pf-type="Body" class="sc-pRgDJ fzXWJx pf-4e766e78"><div data-pf-type="Layout" class="pf-107fe05a"><div data-pf-type="ProductPreview" class="sc-pJVLq dIjrXL pf-5286c95f">{% section 'product-template' %}
+{% section 'product-recommendations' %}
+
+<script type="application/json" id="ProductJson-{{ product.id }}">
+  {{ product | json }}
+</script>
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org/", 
+ {{ product.metafields.alireviews.seo_rating_review_key_script }}
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ shop.url | append: product.url | json }},
+  {%- if product.featured_media.preview_image -%}
+    {%- assign image_size = product.featured_media.preview_image.width | append: 'x' -%}
+    "image": [
+      {{ product.featured_media.preview_image.src | img_url: image_size | prepend: "https:" | json }}
+    ],
+  {%- endif -%}
+  "description": {{ product.description | strip_html | json }},
+  {%- if current_variant.sku != blank -%}
+    "sku": {{ current_variant.sku | json }},
+  {%- endif -%}
+  "brand": {
+    "@type": "Thing",
+    "name": {{ product.vendor | json }}
+  },
+  "offers": [
+    {%- for variant in product.variants -%}
+      {
+        "@type" : "Offer",
+        {%- if variant.sku != blank -%}
+          "sku": {{ variant.sku | json }},
+        {%- endif -%}
+        "availability" : "http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+        "price" : {{ variant.price | divided_by: 100.00 | json }},
+        "priceCurrency" : {{ cart.currency.iso_code | json }},
+        "url" : {{ shop.url | append: variant.url | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+					window.__pagefly_setting__={"baseURL":"https://apps.pagefly.io","analyticsURL":"https://analytics.pagefly.io","isBackend":false,"cdnURL":"https://cdn.pagefly.io","pageflyVersion":"2.12.3","shopDomain":"anthology-jewelry-company.myshopify.com","elementData":{"pf-f2f24f0c":{"listPosition":"bottom","limit":5,"height":"450px","spacing":"10px","listLayout":"slider","_type":"ProductImage"},"pf-38545a17":{"listPosition":"bottom","limit":5,"height":"450px","spacing":"10px","listLayout":"slider","_type":"ProductImage"}},"pageTitle":"Ring OLD","pageType":"product","pageId":"8f556491-c96c-452c-ad31-bd3ff7f133be","lazyLoad":false,"imageLazyLoad":true,"nativeImageLazyLoad":false,"trackingIDs":[]};
+					window.__pagefly_setting__.moneyFormat = {{shop.money_format | json}}
+				</script><script src="https://cdn.pagefly.io/pagefly/2.12.3/core/helper.js?t=20200709180723" defer></script>
+{% section 'alireviews-widget-25604' %}

@@ -1,0 +1,79 @@
+<section class="section page-section" data-section-type="video">
+  <div class="container">
+    {% if section.settings.title != blank %}
+      <div class="border-top">
+        <h1 class="section-heading">{{ section.settings.title }}</h1>
+      </div>
+    {% endif %}
+
+    <div class="align-centre">
+      {% if section.settings.video_url != blank %}
+        <div class="video-container"
+            data-video-id="{{ section.settings.video_url.id }}"
+            data-video-url="{{ section.settings.video_url.url }}"
+            data-video-type="{{ section.settings.video_url.type }}"
+            data-video-autoplay="{% if section.settings.cover_image == blank %}{{ section.settings.autoplay }}{% else %}false{% endif %}">
+          {% if section.settings.cover_image != blank %}
+            <div class="video-container__cover">
+              <div class="rimage-outer-wrapper lazyload fade-in"
+                  data-bgset="{% render 'bgset', image: section.settings.cover_image %}"
+                  data-sizes="auto"
+                  data-parent-fit="cover">
+                <noscript>
+                  <div class="rimage-wrapper" style="padding-top:{{ 1 | divided_by: section.settings.cover_image.aspect_ratio | times: 100 }}%">
+                    <img src="{{ section.settings.cover_image | img_url: '1024x1024' }}" alt="{{ section.settings.cover_image.alt | escape }}" class="rimage__image">
+                  </div>
+                </noscript>
+              </div>
+              <a href="#" class="video-container__play" aria-label="{{ 'general.accessibility_labels.video_play' | t | escape }}">{% render 'svg-play' %}</a>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+  {
+    "name": "Video",
+    "class": "homepage-section",
+    "settings": [
+      {
+        "id": "title",
+        "type": "text",
+        "label": "Heading"
+      },
+      {
+        "id": "video_url",
+        "type": "video_url",
+        "label": "Video link",
+        "accept": ["youtube", "vimeo"],
+        "info": "Supports Youtube and Vimeo",
+        "default": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+      },
+      {
+        "id": "autoplay",
+        "type": "checkbox",
+        "label": "Autoplay",
+        "info": "Video will be muted",
+        "default": false
+      },
+      {
+        "id": "cover_image",
+        "type": "image_picker",
+        "label": "Cover image"
+      }
+	  ],
+	  "presets": [
+	    {
+        "name": "Video",
+        "category": "Video",
+        "settings": {
+          "video_url": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+        }
+	    }
+	  ]
+  }
+{% endschema %}

@@ -1,0 +1,397 @@
+<!-- AnyTrack Tracking Code -->
+<script>!function(e,t,n,s,a){(a=t.createElement(n)).async=!0,a.src="https://assets.anytrack.io/9PWJMb2TiOAK.js",(t=t.getElementsByTagName(n)[0]).parentNode.insertBefore(a,t),e[s]=e[s]||function(){(e[s].q=e[s].q||[]).push(arguments)}}(window,document,"script","AnyTrack");</script>
+<!-- End AnyTrack Tracking Code -->
+<style type="text/css">
+{% if section.settings.logo != blank %}
+  .logo img,
+  #page-footer .logo-column img {
+    width: {{ section.settings.logo_width }}px;
+  }
+{% endif %}
+{% if section.settings.nav_featured_link != blank %}
+  .nav-item-link--featured,
+  .main-nav .nav-item .nav-item-link.nav-item-link--featured {
+    color: {{ section.settings.nav_featured_col }};
+  }
+{% endif %}
+</style>
+
+
+{% if template == 'gift_card' %}
+
+{% comment %} Gift card template logo {% endcomment %}
+<a class="logo" href="{{ routes.root_url }}">
+  {% if section.settings.logo != blank %}
+  {% capture img_size %}{{ section.settings.logo_width | times: 2 }}x{% endcapture %}
+  <img src="{{ section.settings.logo | img_url: img_size }}" alt="{{ section.settings.logo.alt | escape }}" />
+  {% else %}
+  {{ shop.name }}
+  {% endif %}
+</a>
+
+{% else %}
+
+{%- capture announcement -%}
+  {%- if section.settings.announcement_show -%}
+    {%- if template contains 'index' or section.settings.announcement_home_only == false -%}
+      <style type="text/css">
+        #shopify-section-{{ section.id }} .notification {
+          background: {{ section.settings.announcement_col_bar }};
+          color: {{ section.settings.announcement_col_text }};
+        }
+        #shopify-section-{{ section.id }} a.notification:hover {
+          background: {{ section.settings.announcement_col_bar | color_darken: 3 }};
+        }
+      </style>
+
+      {%- if section.settings.announcement_link != blank -%}
+      <a href="{{ section.settings.announcement_link }}" class="notification header-announcement header-announcement--{{ section.settings.announcement_position }}">
+      {%- else -%}
+      <div class="notification header-announcement header-announcement--{{ section.settings.announcement_position }}">
+      {%- endif -%}
+
+        {{- section.settings.announcement_text | escape -}}
+
+      {%- if section.settings.announcement_link == blank -%}
+      </div>
+      {%- else -%}
+      </a>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{% if section.settings.announcement_position == 'above' %}{{ announcement }}{% endif %}
+
+<div class="container header-container" data-section-type="header">
+  {%- assign featured_links = section.settings.nav_featured_link | split: ', ' -%}
+  <div class="page-header layout-{{ section.settings.header_layout }} {% if section.settings.use_mobile_logo %}using-compact-mobile-logo{% endif %}">
+    <div id="toolbar" class="toolbar cf">
+      <span class="mobile-toolbar">
+        <a class="toggle-mob-nav" href="#" aria-controls="mobile-nav" aria-label="{{ 'layout.header.open_mobile_nav_aria_label' | t | escape }}">{% render 'svg-nav' %}</a>
+        {% if section.settings.use_mobile_logo %}
+        <a class="compact-logo" href="{{ routes.root_url }}">
+          {% if section.settings.compact_logo != blank %}
+            {{ section.settings.compact_logo | img_url: '200x' | img_tag: section.settings.compact_logo.alt }}
+          {% else %}
+            {{ section.settings.logo | img_url: '200x' | img_tag: section.settings.logo.alt }}
+          {% endif %}
+        </a>
+        {% endif %}
+      </span>
+
+      {% unless section.settings.header_layout == 'mobile' %}
+      <span class="toolbar-links">
+        {% if shop.customer_accounts_enabled %}
+        {% if customer  %}
+        <a href="{{ routes.account_url }}">{{ 'layout.customer.your_account' | t }}</a>
+        <span class="divider">/</span>
+        <a href="{{ routes.account_logout_url }}">{{ 'layout.customer.log_out' | t }}</a>
+        {% else %}
+        <a href="{{ routes.account_login_url }}">{{ 'layout.customer.log_in' | t }}</a>
+        <span class="divider">/</span>
+        <a href="{{ routes.account_register_url }}">{{ 'layout.customer.create_account_header_link' | t }}</a>
+        {% endif %}
+        {% if section.settings.show_header_search %}<span class="divider">/</span>{% endif %}
+        {% endif %}
+        {% if section.settings.show_header_search %}
+        <form class="search-form" action="{{ routes.search_url }}" method="get" autocomplete="off">
+          <input type="hidden" name="type" value="{{ settings.search_type }}" />
+          <button type="submit">{% render 'svg-search' %}</button>
+          <input type="text" name="q" placeholder="{{ 'layout.header.search' | t | escape }}" aria-label="{{ 'general.search.search_label' | t | escape }}" autocomplete="off" />
+        </form>
+        {% endif %}
+      </span>
+      {% endunless %}
+
+      {% unless section.settings.header_layout == 'mobile' or section.settings.show_social_icons == false %}
+      <span class="toolbar-social">
+        {% render 'social-icons', icon_setting: settings.social_custom_icon, icon_size: 'x48' %}
+      </span>
+      {% endunless %}
+
+      {%- unless section.settings.header_layout == 'mobile' -%}
+        {%- if section.settings.show_locale_selector or section.settings.show_currency_selector -%}
+          <span class="localization localization--header">
+            {% render 'localization', input_prefix: 'header' %}
+          </span>
+        {%- endif -%}
+      {%- endunless-%}
+
+      <span class="toolbar-cart">
+        <a class="current-cart {% if template != 'cart' %}toggle-cart-summary{% endif %}" href="{{ routes.cart_url }}">
+          <span class="beside-svg"><span class="theme-money">{{ cart.total_price | money }}</span></span>
+          <span class="current-cart-icon">
+            {% render 'svg-cart' %}
+            {% if cart.item_count > 0 %}
+              <span class="current-cart-count">{{ cart.item_count }}</span>
+            {% endif %}
+          </span>
+        </a>
+      </span>
+    </div>
+
+    <div class="logo-nav">
+      {% capture logo_html %}
+      <div class="logo align-{% if section.settings.header_layout == 'left' %}left{% else %}center{% endif %}">
+        {% if section.settings.logo != blank %}
+          {% capture img_size %}{{ section.settings.logo_width | times: 2 }}x{% endcapture %}
+          <a href="{{ routes.root_url }}">
+            <img src="{{ section.settings.logo | img_url: img_size }}" alt="{{ section.settings.logo.alt | escape }}" />
+          </a>
+        {% else %}
+          <a href="{{ routes.root_url }}">{{ shop.name }}</a>
+        {% endif %}
+      </div>
+      {% endcapture %}
+
+      <div class="cf{% if section.settings.header_layout == 'nav' %} mobile{% endif %}">{{ logo_html }}</div>
+
+      {% unless section.settings.header_layout == 'mobile' and section.settings.menu_linklist != blank %}
+        {% render 'main-navigation', logo_html: logo_html, featured_links: featured_links %}
+      {% endunless %}
+    </div>
+
+    <script id="mobile-navigation-template" type="text/template">
+      {% render 'mobile-navigation', featured_links: featured_links %}
+    </script>
+  </div>
+
+  {% if section.settings.announcement_position == 'below' %}{{ announcement }}{% endif %}
+</div>
+
+{% endif %}
+
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "menu_linklist",
+        "label": "Menu",
+        "default": "main-menu"
+      },
+      {
+        "type": "select",
+        "id": "header_layout",
+        "label": "Layout",
+        "options": [
+          {
+            "value": "center",
+            "label": "Logo in the center"
+          },
+          {
+            "value": "left",
+            "label": "Logo on the left"
+          },
+          {
+            "value": "nav",
+            "label": "Logo in the navigation"
+          },
+          {
+            "value": "mobile",
+            "label": "Mobile navigation style on desktop"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Image",
+        "info": "300 x 200px recommended"
+      },
+      {
+        "type": "text",
+        "id": "logo_width",
+        "label": "Logo width (in pixels)",
+        "default": "300"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_mobile_logo",
+        "label": "Enable compact mobile logo",
+        "default": false
+      },
+      {
+        "type": "image_picker",
+        "id": "compact_logo",
+        "label": "Compact mobile logo"
+      },
+      {
+        "type": "header",
+        "content": "Toolbar options"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_header_search",
+        "label": "Show search box",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_social_icons",
+        "label": "Show social media links",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Language Selector",
+        "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_locale_selector",
+        "label": "Show language selector",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Currency Selector",
+        "info": "To add a currency, go to your [payment settings.](/admin/settings/payments)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_currency_selector",
+        "label": "Show currency selector",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Navigation"
+      },
+      {
+        "type": "select",
+        "id": "nav_alignment",
+        "label": "Alignment",
+        "options": [
+          {
+            "value": "center",
+            "label": "Centered"
+          },
+          {
+            "value": "left",
+            "label": "Left-aligned"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "range",
+        "id": "nav_col_limit_int",
+        "min": 3,
+        "max": 14,
+        "step": 1,
+        "label": "Maximum number of links per column",
+        "info": "Does not apply to full-width dropdown",
+        "default": 8
+      },
+      {
+        "type": "text",
+        "id": "nav_featured_link",
+        "label": "Featured link",
+        "info": "Use a different color to highlight this link",
+        "default": "Sale"
+      },
+      {
+        "type": "color",
+        "id": "nav_featured_col",
+        "label": "Featured link color",
+        "default": "#dd6666"
+      },
+      {
+        "type": "header",
+        "content": "Announcement bar"
+      },
+      {
+        "type": "checkbox",
+        "id": "announcement_show",
+        "label": "Show announcement",
+		    "default": false
+      },
+      {
+        "type": "select",
+        "id": "announcement_position",
+        "label": "Position",
+        "options": [
+          {
+            "value": "above",
+            "label": "Above header"
+          },
+          {
+            "value": "below",
+            "label": "Below header"
+          }
+        ],
+        "default": "below"
+      },
+      {
+        "type": "checkbox",
+        "id": "announcement_home_only",
+        "label": "Home page only",
+		    "default": false
+      },
+      {
+        "type": "text",
+        "id": "announcement_text",
+        "label": "Announcement text"
+      },
+      {
+        "type": "url",
+        "id": "announcement_link",
+        "label": "Announcement link"
+      },
+      {
+        "type": "color",
+        "id": "announcement_col_bar",
+        "label": "Bar",
+        "default": "#f3f3f3"
+      },
+      {
+        "type": "color",
+        "id": "announcement_col_text",
+        "label": "Text",
+        "default": "#8c8c8c"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "menu_promotion",
+        "name": "Menu promotion",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Menu promotions are shown in dropdown menus. They are not visible in the mobile menu."
+          },
+          {
+            "type": "text",
+            "id": "dropdown_link_title",
+            "label": "Dropdown link title",
+            "info": "Which dropdown menu to show this promotion in"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "text",
+            "id": "text",
+            "label": "Text"
+          },
+          {
+            "type": "url",
+            "id": "link_url",
+            "label": "Link URL"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

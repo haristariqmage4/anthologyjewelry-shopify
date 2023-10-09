@@ -1,0 +1,134 @@
+{%- assign max_cols = section.settings.products_per_row | default: 4 -%}
+{%- capture url -%}{% if collection %}{{ product.url | within: collection }}{% else %}{{ product.url }}{% endif %}{%- endcapture -%}
+
+{%- if settings.prod_thumb_shape == 'natural' -%}
+  {%- assign aspect_ratio = false -%}
+{%- else -%}
+  {%- assign aspect_ratio = settings.prod_thumb_shape | times: 1.0 -%}
+{%- endif -%}
+
+<div class="product-block layout-align-{{ settings.prod_block_layout }} {% if settings.label_soldout_show and product.available == false %}sold-out {% endif %}{{ product-block | default: 'flex column' }} max-cols-{{ max_cols }} min-cols-2">
+  <div class="product-block__inner">
+    <div class="image image--shape-{{ settings.prod_thumb_shape }} {% if settings.product_grid_hover_image and product.media.size > 1 %}image--with-secondary{% endif %}">
+      <div class="inner">
+        <a href="{{ url }}">
+          <div class="image__primary">
+            {% render 'responsive-image', image: product.featured_media.preview_image, aspect_ratio: aspect_ratio %}
+          </div>
+          {% if settings.product_grid_hover_image and product.media.size > 1 %}
+            <div class="image__secondary">
+              <div class="rimage-outer-wrapper lazyload fade-in"
+                  data-bgset="{% render 'bgset', image: product.media[1].preview_image %}"
+                  data-sizes="auto"
+                  data-parent-fit="contain">
+                <noscript>
+                  <div class="rimage-wrapper" style="padding-top:{{ 1 | divided_by: product.media[1].preview_image.aspect_ratio | times: 100 }}%">
+                    <img src="{{ product.media[1].preview_image | img_url: '1024x1024' }}" alt="{{ product.media[1].preview_image.alt | escape }}" class="rimage__image">
+                  </div>
+                </noscript>
+              </div>
+            </div>
+          {% endif %}
+        </a>
+
+        {% if settings.prod_quick_buy_show and settings.prod_quick_buy_type == 'hover' %}
+          <div class="quick-buy-wrap pos-{{ settings.prod_quick_buy_pos }}">
+            <a class="quick-buy {% if settings.prod_quick_buy_pos == 'middle' %}giant{% else %}big{% endif %}-round-button" href="{{ url }}" data-product-id="{{ product.id }}"><span>{{ 'products.general.quick_buy_html' | t }}</span></a>
+          </div>
+
+          {% render 'quick-buy-placeholder', product: product %}
+        {% endif %}
+      </div>
+
+      {% render 'product-label', product: product %}
+    </div>
+
+    {%- if settings.product_grid_show_weight -%}
+      <div class="product-block__weight">
+        {%- if product.variants.first.weight > 0 -%}
+          {%- assign a_weight = product.variants.first.weight -%}
+          {%- for variant in product.variants -%}
+            {%- if variant.weight != a_weight -%}
+              {%- assign a_weight = false -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if a_weight -%}
+            <div class="product-block__weight-value">
+              {{ product.variants.first.weight | weight_with_unit }}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="product-block__title-price">
+      <a class="title" href="{{ url }}">
+        {% if section.settings.grid_show_vendor %}
+        <div class="vendor">{{ product.vendor }}</div>
+        {% endif %}
+        {{ product.title }}
+      </a>
+
+      <div class="price {% if product.compare_at_price > product.price %}on-sale{% endif %}">
+        {% if product.price_varies %}
+         <span class="from">{{ 'products.general.from' | t }}</span>
+        {% endif %}
+
+        <span class="amount theme-money">{{ product.price | money }}</span>
+
+        {% if product.compare_at_price > product.price %}
+          <del><span class="theme-money">{{ product.compare_at_price | money }}</span></del>
+        {% endif %}
+
+        {%- assign variant = product.variants | sort: 'price' | first -%}
+        {% render 'unit-price', variant: variant %}
+      </div>
+    </div>
+
+    {% if settings.prod_quick_buy_show and settings.prod_quick_buy_type == 'in-page' and product.available %}
+      {% if product.variants.size > 1 %}
+        <div class="product-form">
+          <a class="quick-buy btn" href="{{ url }}" data-product-id="{{ product.id }}">{{ 'products.grid.choose_options' | t }}</a>
+          {% render 'quick-buy-placeholder', product: product %}
+        </div>
+      {% else %}
+        {%- assign current_variant = product.selected_or_first_available_variant -%}
+        {%- if settings.cart_type contains 'drawer' -%}
+          {%- assign enable_ajax = true -%}
+        {%- else -%}
+          {%- assign enable_ajax = false -%}
+        {%- endif -%}
+        {% form 'product', product, class: 'product-form product-form--mini', data-ajax-add-to-cart: enable_ajax, data-product-id: product.id %}
+          {% comment %}
+            Automatically inserted by Shop Pay Installments theme updater
+          {% endcomment %}
+          {% unless settings.disable_autogenerated_payment_terms %}
+            {{ form | payment_terms }}
+          {% endunless %}
+          <input type="hidden" name="quantity" value="1" />
+          <input type="hidden" name="id" value="{{ current_variant.id }}" />
+          <button type="submit" name="add" class="btn product-add">{{ 'products.grid.add_to_cart' | t }}</button>
+     
+ 
+    
+    
+    {% endform %}
+        <div class="qty-adjuster-container">
+          <div class="qty-adjuster qty-adjuster--ajax qty-adjuster--has-subtext" {% if current_variant.inventory_management == 'shopify' and current_variant.inventory_policy == 'deny' %}data-limit="{{ current_variant.inventory_quantity }}"{% endif %}>
+            <div class="qty-adjuster__inner">
+              <button class="btn qty-adjuster__down">{% render 'svg-minus' %}</button>
+              <input class="qty-adjuster__value" type="text" pattern="[0-9]*" name="quantity" value="">
+              <button class="btn qty-adjuster__up">{% render 'svg-plus' %}</button>
+            </div>
+            <div class="qty-adjuster__subtext">{{ 'products.grid.item_is_in_cart' | t }}</div>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <div class="themed-product-reviews">
+      <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+    </div>
+  </div>
+</div>
+{% assign forloop_index = false %}

@@ -1,0 +1,92 @@
+<section class="border-top section products-section" data-section-type="featured-collection">
+  <div class="container">
+    {% if section.settings.collection == blank %}
+
+      {% render 'onboarding-product-row' %}
+
+    {% else %}
+
+    {% assign collection = collections[section.settings.collection] %}
+    <div class="opposing-items">
+      <h1 class="section-heading left">{{ collection.title | link_to: collection.url }}</h1>
+      <a class="more-link" href="{{ collection.url }}">
+        {{ 'collections.general.view_all' | t }}
+      </a>
+    </div>
+    <div class="product-grid row grid {% if section.settings.row_count_int == 1 %}one-row{% endif %}" data-normheights=".image" data-normheights-inner="img">
+      {% assign product_limit = section.settings.products_per_row | times: section.settings.row_count_int %}
+      {% for product in collection.products limit: product_limit %}
+        {% render 'product-block', product: product %}
+      {% endfor %}
+
+      {%- for i in (1..section.settings.products_per_row) -%}
+        <div class="product-block product-block--flex-spacer flex column max-cols-{{ section.settings.products_per_row }} min-cols-2"></div>
+      {%- endfor -%}
+    </div>
+
+    {% endif %}
+  </div>
+</section>
+
+
+{% schema %}
+  {
+    "name": "Featured collection",
+    "class": "homepage-section",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "collection",
+        "label": "Collection"
+      },
+      {
+        "type": "checkbox",
+        "id": "grid_show_vendor",
+        "label": "Show product vendor",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "products_per_row",
+        "label": "Maximum number of products per row",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          },
+          {
+            "value": "5",
+            "label": "5"
+          }
+        ],
+        "default": "4"
+      },
+      {
+        "type": "range",
+        "id": "row_count_int",
+        "min": 1,
+        "max": 4,
+        "step": 1,
+        "label": "Rows",
+        "default": 1
+      }
+    ],
+    "presets": [
+      {
+        "name": "Featured collection",
+        "category": "Collection",
+        "settings": {
+          "collection": ""
+        }
+      }
+    ]
+  }
+{% endschema %}

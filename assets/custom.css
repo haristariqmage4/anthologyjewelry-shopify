@@ -1,0 +1,400 @@
+/* FONTS */
+/* FONTS */
+/* FONTS */
+body,
+.product-block .price .amount,
+.contact-form input {
+  letter-spacing: 0.04em;
+  color: #474747;
+}
+
+h1,
+.template-index .section .column.half,
+.product-title-row .product-title {
+  color: #474747;
+  font-family: "Optima nova";
+}
+
+h1,
+.template-index .section .column.half,
+.product-title-row .product-title {
+  font-size: 30px;
+  letter-spacing: -0.01em;
+}
+
+/* Homepage */
+.template-index .section-heading {
+  font-size: 54px;
+}
+
+.homepage-section .reading-column,
+.newsletter-section__text .rte {
+  font-size: 23px;
+}
+
+.search-form input[type="text"],
+.main-nav,
+.toolbar {
+  letter-spacing: 0.2em;
+}
+
+.search-form input[type="text"],
+.main-nav,
+.toolbar,
+.notification {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.search-form button svg {
+  width: 12px;
+}
+
+.product-block .title,
+.contact-form input {
+  font-size: 18px;
+}
+
+.product-block .price .amount {
+  font-size: 14px;
+}
+
+.more-link {
+  letter-spacing: 0.09em;
+}
+
+.column p {
+  font-size: 23px;
+  line-height: 150%;
+}
+
+/* SPACING BETWEEN ELEMENTS */
+.current-cart-icon {
+  padding-left: 0.3em;
+}
+
+/* Product Page */
+.product-title-row .product-title {
+  font-size: 37px;
+}
+
+.product-title-row .product-price .current-price {
+  font-family: inherit;
+  font-size: 26px;
+}
+
+.product-form {
+  text-transform: uppercase;
+}
+
+.product-form .selector-wrapper {
+  margin: 5px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.product-add {
+  height: 70px;
+  width: 100%;
+  background-color: #0e4059;
+  border: none;
+  font-size: 15px;
+  line-height: 150%;
+  letter-spacing: 0.1em;
+  font-weight: 300;
+  transition: none;
+  -webkit-transition: none;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* Clickety boxes */
+.clickyboxes li a {
+  border-radius: 0
+}
+
+/* Upload Lift */
+/* Upload Lift */
+/* Upload Lift */
+.upload-lift {
+  margin-top: 20px;
+}
+.filepond--drop-label {
+
+}
+.filepond--drop-label label {
+  background: transparent
+}
+.filepond--list.filepond--list {
+  font-family: "gibsonlight";
+}
+
+/* Other */
+#shopify-section-header .notification {
+  font-size: 14px;
+  width: 100%;
+  min-height: 30px;
+  background-color: #f8f4f3 !important;
+  text-transform: uppercase;
+  text-align: center;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  color: #474747 !important;
+  font-family: "gibsonregular";
+  letter-spacing: 0.2em;
+}
+
+/* Klarna */
+klarna-placement {
+  height: 40px;
+  margin: 20px 0 -10px 0;
+}
+/* Qikify - Smart Bar - fix overlap mobile menu - Henry - 23102020 */
+
+/* Qikify - end */
+
+@media (max-width:767px) {html, body {overflow-x: hidden;}}
+
+/* Cart */
+.cart_notification_item {
+margin-top: 15px;
+    font-size: 11px;
+    text-transform: uppercase;
+    line-height: 1.36;
+    letter-spacing: .7px;
+    color: #a9a9a9;
+    font-weight: 600;
+}
+
+.cart-item__description {
+ 	flex: 1 0 auto; 
+}
+
+.checkout-button.checkout-button--upper {
+ 	margin-top: 0.85em;
+    margin-bottom: 0.5em; 
+}
+
+.opposing-items .more-link {
+  	margin-top: 1.25em;
+}
+
+/* Gift Card */
+[data-product-type="gift-card"] .selector-wrapper {
+ border-bottom: none;
+}
+[data-product-type="gift-card"] .selector-wrapper label {
+ display: none;
+}
+
+/* Accordion */
+.accordion {
+ cursor: pointer;
+ padding: 10px 0;
+ margin: 0;
+ display: block;
+ outline: none;
+ transition: 0.4s;
+ position: relative;
+}
+.accordion:hover {
+ background: transparent;
+}
+.accordion + .panel {
+ max-height: 0;
+ overflow: hidden;
+ transition: max-height 0.2s ease-out, padding 0.2s ease-out;
+ padding: 0 0 0 15px;
+}
+.accordion.active + .panel {
+ padding: 20px 0 20px 15px;
+}
+.accordion.chevron:after {
+ content: "\e766";
+ font-size: 18px;
+ font-family: "entypo";
+ font-style: normal;
+ font-weight: normal;
+ color: #757575;
+ speak: none;
+ display: inline-block;
+ text-decoration: inherit;
+ margin-right: 0.2em;
+ text-align: center;
+ opacity: 0.8;
+ position: absolute;
+ right: 0;
+ transform: rotate(90deg);
+ transition: all 0.2s;
+}
+.accordion.active.chevron::after {
+ transform: rotate(270deg);
+}
+.accordion a.active {
+    display: inline-block;
+    margin-right: 0;
+    padding-left: 0;
+    position: relative;
+    border: none;
+    background: transparent;
+}
+.accordion a.active::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  display: inline-block;
+  vertical-align: bottom;
+  margin-right: 10px;
+  display: inline-block;
+}
+.accordion.selected-option {
+  
+}
+.accordion.selected-option a::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  display: inline-block;
+  vertical-align: bottom;
+  margin-right: 10px;
+}
+.accordion + .panel li a::after {
+  content: "";
+  font-family: "entypo";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: 0.2em;
+  opacity: 0.8;
+  position: absolute;
+  right: -2px;
+  color: #757575;
+  border: 1px solid #757575;
+  border-radius: 17px;
+  width: 22px;
+  height: 22px;
+  text-align: center;
+  padding: 2px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+  transition: all 0.2s;
+}
+.accordion + .panel li a.active::after {
+  content: "\2713";
+  color: #fff;
+  background: #757575; 
+}
+.accordion.chevron {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.accordion.chevron a.active {
+  flex-basis: 76%;
+  pointer-events: none;
+}
+
+/* Option: Base Metal */
+/* Option: Base Metal */
+/* Option: Base Metal */
+[data-name="Base Metal"] ul {
+  display: flex;
+  justify-content: space-between;
+  height: 80px;
+  margin-bottom: 15px;
+ }
+ [data-name="Base Metal"] li {
+  height: auto;
+  flex: 1 1 calc(100% / 3);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: transparent;
+  -webkit-transition: all 400ms linear;
+  transition: all 400ms linear;
+ }
+ [data-name="Base Metal"] li a {
+  border: solid 1px #e5e5e5;
+  padding: 7px 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+ }
+ [data-name="Base Metal"] li:nth-child(2) a {
+  border-width: 1px 0;
+ }
+ [data-name="Base Metal"] li a.active {
+  background-color: #fbf4f3;
+  border: solid 1px #757575;
+ }
+ [data-name="Base Metal"] li:nth-child(2) a.active {
+  border-width: 1px;
+ }
+ [data-name="Base Metal"] li a .price {
+  display: block;
+ }
+ 
+ /* Option: Color, Scent */
+ /* Option: Color, Scent */
+ /* Option: Color, Scent */
+ [data-name="Color"] li a,
+ [data-name="Scent"] li a {
+  display: block;
+  margin-right: 0;
+  padding-left: 0;
+  position: relative;
+  border: none;
+  background: transparent;
+ }
+ [data-name="Color"] li a:hover,
+ [data-name="Scent"] li a:hover {
+  background: transparent;
+ }
+ [data-name="Color"] li a::before,
+ [data-name="Scent"] li a::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  display: inline-block;
+  vertical-align: bottom;
+  margin-right: 10px;
+ }
+ a.opt---gold::before {
+  background-color: #f3e0ae;
+ }
+ a.opt---silver::before {
+  background-color: silver;
+ }
+ a.opt---rose-gold::before {
+  background-color: #f0c6ac;
+ }
+ [data-name="Scent"] li a.opt---coulored-clouds::before {
+  background-color: #fda5bd;
+ }
+ [data-name="Scent"] li a.opt---sprinkle-kindness::before {
+  background-color: #d486ac;
+ }
+ [data-name="Scent"] li a.opt---feeling-woodsy::before {
+  background-color: #5a6f75;
+ }
+ [data-name="Scent"] li a.opt---happiness-comes-in-waves::before {
+  background-color: #43c5e3;
+ }
