@@ -279,6 +279,74 @@ input[name="soundwave-audio-file"] {
     display: none;
 }
 
+ .alphabetic-keys, .numeric-keys, .symbolic-keys {
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    grid-gap: 5px;
+       margin-bottom: 1%;
+}
+.alphabetic-keys button, .numeric-keys button, .symbolic-keys button {
+    width: 30px;
+    height: 30px !important;
+    display: unset !important;
+    line-height: unset;
+    min-height: unset;
+    border: 2px solid;
+    background-color: transparent;
+    color: #000;
+    font-weight: bold;
+    font-size: .75em;
+    font-family: 'Quicksand';
+}
+.customizer-keyboard {
+    margin-top: 10px;
+}
+
+
+
+@media only screen and (max-width:768px){
+  .custom-feature-ui-single {
+      margin-left: unset;
+      margin-bottom: 20px;
+      padding: 25px;
+      background: white;
+      position: relative;
+      box-sizing: border-box !important;
+  }
+  .alphabetic-keys, .numeric-keys, .symbolic-keys {
+      display: grid;
+      grid-template-columns: repeat(6,1fr);
+      grid-gap: 5px;
+      margin-bottom: 1%;
+      margin-top: 15px;
+  }
+  .alphabetic-keys button, .numeric-keys button, .symbolic-keys button {
+      width: 36px;
+      height: 36px!important;
+      display: unset!important;
+      line-height: unset;
+      min-height: unset;
+      border: 2px solid;
+      background-color: transparent;
+      color: #000;
+      font-weight: 700;
+      font-size: 0.8em;
+      font-family: Quicksand;
+  }
+  #house-font-input {
+      font-size: 24px;
+      padding-top: 12px;
+      border: 1px solid #c9cdd2;
+      width: 100%;
+      text-align: center;
+      line-height: 27px;
+      padding-bottom: 0;
+      height: 80px;
+  }
+  
+}
+
+
 /* 11/09/2021 - Temporary hiding of the customizer on READY TO SHIP products */
 /*
 body.product-love-signature-necklace .product-form .customizer,

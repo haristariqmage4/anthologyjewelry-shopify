@@ -6,385 +6,540 @@
 {% assign hasCustomOption = '' %}
 
 {% comment %} All possible custom options {% endcomment %}
-{% assign custom_options = "Handwriting,House Font,Soundwave,Roman Numeral Date,Special Date,Fingerprint" | split: ',' %}
+{% assign custom_options = 'Handwriting,House Font,Soundwave,Roman Numeral Date,Special Date,Fingerprint,None'
+  | split: ','
+%}
 
 {% comment %} hasCustomOption will include all of the tags added {% endcomment %}
 {% for option in custom_options %}
-    {% if product.tags contains option %}
-        {% assign hasCustomOption = hasCustomOption | append: option | append: ',' %}
-    {% endif%}
+  {% if product.tags contains option %}
+    {% assign hasCustomOption = hasCustomOption | append: option | append: ',' %}
+  {% endif %}
 {% endfor %}
 
 {% if hasCustomOption.size %}
-<div class="customizer">
-
+  <div class="customizer">
     <!-- .selector-wrapper must be there for clickyboxes to work properly -->
     <div class="selector-wrapper">
-    
-        <!-- Div must be there for clickyboxes to work properly -->
-        <div>
-        
-            {% comment %} Accordion Label for Customizer {% endcomment %}
-            <label class="accordion chevron" for="option-customize">{{ product.options.size | plus: 1 }}. Customize</label>
+      <!-- Div must be there for clickyboxes to work properly -->
+      <div>
+        {% comment %} Accordion Label for Customizer {% endcomment %}
+        <label class="accordion chevron front" for="option-customize">
+          {{- product.options.size | plus: 1 }}. Customize</label
+        >
 
-            {% comment %} Accordion Panel for Customizer {% endcomment %}
-            <div class="panel custom-options">
+        {% comment %} Accordion Panel for Customizer {% endcomment %}
+        <div class="panel custom-options">
+          {% comment %} Options {% endcomment %}
+          {% comment %}
+            Notes:
+            - This select box stays in the code and clickybox adds the optins with with checkmarks
+            - This select box does not add anything to the shopping cart
+          {% endcomment %}
 
-                {% comment %} Options {% endcomment %}
-                {% comment %} 
-                    Notes:
-                    - This select box stays in the code and clickybox adds the optins with with checkmarks
-                    - This select box does not add anything to the shopping cart
-                {% endcomment %}
-                
-                <select id="option-customize">
+          <select id="option-customize">
+            {% if product.tags contains 'Handwriting' %}
+              <option value="handwriting">Handwriting</option>
+            {% endif %}
 
-                    {% if product.tags contains "Handwriting" %}
-                    <option value="handwriting">Handwriting</option>
-                    {% endif %}
+            {% if product.tags contains 'House Font' %}
+              <option value="house font">House Font</option>
+            {% endif %}
 
-                    {% if product.tags contains "House Font" %}
-                    <option value="house font">House Font</option>
-                    {% endif %}
+            {% if product.tags contains 'Soundwave' %}
+              <option value="soundwave">Soundwave</option>
+            {% endif %}
+            {% if product.tags contains 'Roman Numeral Date' %}
+              <option value="roman numeral date">Roman Numeral Date</option>
+            {% endif %}
 
-                    {% if product.tags contains "Soundwave" %}
-                    <option value="soundwave">Soundwave</option>
-                    {% endif %}
-                    {% if product.tags contains "Roman Numeral Date" %}
-                    <option value="roman numeral date">Roman Numeral Date</option>
-                    {% endif %}
+            {% if product.tags contains 'Special Date' %}
+              <option value="special date">Special Date</option>
+            {% endif %}
 
-                    {% if product.tags contains "Special Date" %}
-                    <option value="special date">Special Date</option>
-                    {% endif %}
-
-                    {% if product.tags contains "Fingerprint" %}
-                    <option value="fingerprint">Fingerprint</option>
-                    {% endif %}
-
-                    <!-- <option value="font-house">House Font</option> -->
-                </select>
-                
-                <!-- Custom Features: Content -->
-                <!-- Custom Features: Content -->
-                <!-- Custom Features: Content -->
-
-                {% if hasCustomOption contains 'Handwriting' %}
-                <!-- HANDWRITING -->
-                <div class="custom-feature-ui-single" data-type="upload-lift" data-name="handwriting">
-                    {% comment %} Upload-Lift widget element container {% endcomment %}
-                    <div id="uploadlift-handwriting"></div>
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if hasCustomOption contains 'House Font' %}
-                <!-- HOUSEFONT -->
-                <div class="custom-feature-ui-single" data-type="standard" data-name="house font">
-                    <input type="text" id="house-font-input" placeholder="Enter your text" />
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if hasCustomOption contains 'Soundwave' %}
-                <!-- SOUNDWAVE -->
-                <div class="custom-feature-ui-single" data-type="upload-lift" data-name="soundwave">
-                    
-                    <div class="buttons_container">
-                        <button type="button" id="soundwave-select-button">Select <!-- Image or --> audio file</button>
-                    </div>
-
-                    <!-- Wavesurfer Image (Initial Audio File Visual) -->
-                    <div id="waveform">
-                        <p class="label hide">Original</p>
-                    </div>
-
-                    <!-- Initial Audio File (hidden) -->
-                    <input type="file" name="soundwave-audio-file" accept="audio/*" />
-
-                    <!-- UploadLift image upload (hidden) -->
-                    <!--
-                    <div id="uploadlift-wrapper">
-                        <!- This is added dynamically so that when the page refreshes it doesnt load an empty file ->
-                    </div>
-                    -->
-
-                    <!-- Upload lift Widget -->
-                    <div id="uploadlift-soundwave" class="hide">
-                        <p class="label">Final</p>
-                    </div>
-
-                    <!-- Not used -->
-                    <!-- 
-                    <div class="result-image loader-parent">
-                        <!- Custom Image of the final resutl after Uploaded with Uplift ->
-                        <img id="uploadlift-soundwave-loader" class="no-waveform" src="" />
-                    </div>
-                    -->
-                    
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
-
-                    <div class="note">Note: If image comes up empty, try a smaller file</div>
-
-                    <img class="loading-ajax" src="{{ 'loading.gif' | asset_url }}" />
-
-                </div>
-                {% endif %}
-
-                {% if hasCustomOption contains 'Roman Numeral Date' %}
-                <!-- ROMAN NUMERALS -->
-                <div class="custom-feature-ui-single" data-type="standard" data-name="roman numeral date">
-                    
-                    <div class="custom-feature-ui-single__form-inputs">
-                        <label>Enter the date</label>
-                        <input type="date" name="date" placeholder="MM / DD / YYYY" pattern="\d{2}-\d{2}-\d{4}">
-                    </div>
-
-                    <div class="custom-feature-ui-single__result">
-                        <input type="text" id="roman_numerals_date_result" disabled />
-                    </div>
-
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
-
-                </div>
-                {% endif %}
-
-                {% if hasCustomOption contains 'Special Date' %}
-                <!-- SPECIAL DATE -->
-                <div class="custom-feature-ui-single" data-type="standard" data-name="special date">
-                    
-                    <div class="custom-feature-ui-single__form-inputs">
-                        <input type="text" name="special-date" placeholder="Your special date" max="20" />
-                        <br />
-                        <div style="margin: 0.5em 0 0;">Up to 20 Characters</div>
-                    </div>
-
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
-
-                </div>
-                <!-- END Custom Features -->
-                {% endif %}
-
-              {% if hasCustomOption contains 'Fingerprint' %}
-                <!-- Fingerprint -->
-                <div class="custom-feature-ui-single" data-type="upload-lift" data-name="fingerprint">
-                    {% comment %} Upload-Lift widget element container {% endcomment %}
-                    <div id="uploadlift-handwriting"></div>
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
-                </div>
-                <!-- END Custom Features -->
-                {% endif %}
+            {% if product.tags contains 'Fingerprint' %}
+              <option value="fingerprint">Fingerprint</option>
+            {% endif %}
+             {% if product.tags contains 'None' %}
+                <option value="none">None</option>
+              {% endif %}
+          
             
+           
+
+            <!-- <option value="font-house">House Font</option> -->
+          </select>
+
+          <!-- Custom Features: Content -->
+          <!-- Custom Features: Content -->
+          <!-- Custom Features: Content -->
+
+          {% if hasCustomOption contains 'Handwriting' %}
+            <!-- HANDWRITING -->
+            <div class="custom-feature-ui-single" data-type="upload-lift" data-name="handwriting">
+              {% comment %} Upload-Lift widget element container {% endcomment %}
+              <div id="uploadlift-handwriting"></div>
+              <div class="custom-feature-ui-single__form-buttons">
+                <div class="button cancel">Cancel</div>
+              </div>
             </div>
+          {% endif %}
 
+          {% if hasCustomOption contains 'House Font' %}
+            <!-- HOUSEFONT -->
+            <div class="custom-feature-ui-single" data-type="standard" data-name="house font">
+              <input type="text" id="house-font-input" class="keys-input-front" placeholder="Enter your text">
+                          <div class="customizer-keyboard">
+                                    <div class="alphabetic-keys">
+         <button type="button" class="key">A</button>
+        <button type="button" class="key">B</button>
+        <button type="button" class="key">c</button>
+        <button type="button" class="key">D</button>
+        <button type="button" class="key">E</button>
+        <button type="button" class="key">F</button>
+       <button type="button" class="key">G</button>
+         <button type="button" class="key">H</button>
+        <button type="button" class="key">I</button>
+        <button type="button" class="key">J</button>
+        <button type="button" class="key">K</button>
+        <button type="button" class="key">L</button>
+        <button type="button" class="key">M</button>
+        <button type="button" class="key">O</button>
+        <button type="button" class="key">P</button>
+        <button type="button" class="key">Q</button>
+        <button type="button" class="key">R</button>
+        <button type="button" class="key">S</button>
+        <button type="button" class="key">T</button>
+        <button type="button" class="key">U</button>
+        <button type="button" class="key">V</button>
+        <button type="button" class="key">W</button>
+        <button type="button" class="key">X</button>
+        <button type="button" class="key">Y</button>
+        <button type="button" class="key">Z</button>
+                </div>
+                  <div class="numeric-keys">
+                     <button type="button" class="key">0</button>
+                      <button type="button" class="key">1</button>
+                      <button type="button" class="key">2</button>
+                      <button type="button" class="key">3</button>
+                      <button type="button" class="key">4</button>
+                      <button type="button" class="key">5</button>
+                      <button type="button" class="key">6</button>
+                      <button type="button" class="key">7</button>
+                      <button type="button" class="key">8</button>
+                      <button type="button" class="key">9</button>
+                  </div>
+                  <div class="symbolic-keys">
+                     <button type="button" class="key">*</button>
+                     <button type="button" class="key">/</button>
+                     <button type="button" class="key">!</button>
+                      <button type="button" class="key">@</button>
+                      <button type="button" class="key">#</button>
+                      <button type="button" class="key">$</button>
+                  </div>
+                   </div>
+              <div class="custom-feature-ui-single__form-buttons">
+                <div class="button cancel">Cancel</div>
+              </div>        
+            </div>
+          {% endif %}
+
+          {% if hasCustomOption contains 'Soundwave' %}
+            <!-- SOUNDWAVE -->
+            <div class="custom-feature-ui-single" data-type="upload-lift" data-name="soundwave">
+              <div class="buttons_container">
+                <button type="button" id="soundwave-select-button">
+                  Select
+                  <!-- Image or -->
+                  audio file
+                </button>
+              </div>
+
+              <!-- Wavesurfer Image (Initial Audio File Visual) -->
+              <div id="waveform">
+                <p class="label hide">Original</p>
+              </div>
+
+              <!-- Initial Audio File (hidden) -->
+              <input type="file" name="soundwave-audio-file" accept="audio/*">
+
+              <!-- UploadLift image upload (hidden) -->
+              <!--
+                <div id="uploadlift-wrapper">
+                    <!- This is added dynamically so that when the page refreshes it doesnt load an empty file ->
+                </div>
+              -->
+
+              <!-- Upload lift Widget -->
+              <div id="uploadlift-soundwave" class="hide">
+                <p class="label">Final</p>
+              </div>
+
+              <!-- Not used -->
+              <!--
+                <div class="result-image loader-parent">
+                    <!- Custom Image of the final resutl after Uploaded with Uplift ->
+                    <img id="uploadlift-soundwave-loader" class="no-waveform" src="" />
+                </div>
+              -->
+
+              <div class="custom-feature-ui-single__form-buttons">
+                <div class="button cancel">Cancel</div>
+              </div>
+
+              <div class="note">Note: If image comes up empty, try a smaller file</div>
+
+              <img class="loading-ajax" src="{{ 'loading.gif' | asset_url }}">
+            </div>
+          {% endif %}
+
+          {% if hasCustomOption contains 'Roman Numeral Date' %}
+            <!-- ROMAN NUMERALS -->
+            <div class="custom-feature-ui-single" data-type="standard" data-name="roman numeral date">
+              <div class="custom-feature-ui-single__form-inputs">
+                <label>Enter the date</label>
+                <input type="date" name="date" placeholder="MM / DD / YYYY" pattern="\d{2}-\d{2}-\d{4}">
+              </div>
+
+              <div class="custom-feature-ui-single__result">
+                <input type="text" id="roman_numerals_date_result" disabled>
+              </div>
+
+              <div class="custom-feature-ui-single__form-buttons">
+                <div class="button cancel">Cancel</div>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if hasCustomOption contains 'Special Date' %}
+            <!-- SPECIAL DATE -->
+            <div class="custom-feature-ui-single" data-type="standard" data-name="special date">
+              <div class="custom-feature-ui-single__form-inputs">
+                <input type="text" name="special-date" placeholder="Your special date" max="20">
+                <br>
+                <div style="margin: 0.5em 0 0;">Up to 20 Characters</div>
+              </div>
+
+              <div class="custom-feature-ui-single__form-buttons">
+                <div class="button cancel">Cancel</div>
+              </div>
+            </div>
+            <!-- END Custom Features -->
+          {% endif %}
+
+          {% if hasCustomOption contains 'Fingerprint' %}
+            <!-- Fingerprint -->
+            <div class="custom-feature-ui-single" data-type="upload-lift" data-name="fingerprint">
+              {% comment %} Upload-Lift widget element container {% endcomment %}
+              <div id="uploadlift-handwriting"></div>
+              <div class="custom-feature-ui-single__form-buttons">
+                <div class="button cancel">Cancel</div>
+              </div>
+            </div>
+            <!-- END Custom Features -->
+          {% endif %}
+    {% if hasCustomOption contains 'None' %}
+            <!-- None -->
+            <div class="custom-feature-ui-single" data-type="none" data-name="none">
+              <div class="custom-feature-ui-single__form-buttons">
+                <div class="button cancel">Cancel</div>
+              </div>
+            </div>
+            <!-- END Custom Features -->
+          {% endif %}
         </div>
-
+      </div>
     </div>
-</div>
+  </div>
 
-<input id="customization" name="properties[none]" value="" >
-
+  <input id="customization" name="properties[none]" value="">
 {% endif %}
 
 {% comment %} This duplicate code is for front/back {% endcomment %}
 
 {% if hasCustomOption.size %}
-{% if product.tags contains "Front-Back" %}  
-<div class="customizer">
-
-    <!-- .selector-wrapper must be there for clickyboxes to work properly -->
-    <div class="selector-wrapper">
-    
+  {% if product.tags contains 'Front-Back' %}
+    <div class="customizer">
+      <!-- .selector-wrapper must be there for clickyboxes to work properly -->
+      <div class="selector-wrapper">
         <!-- Div must be there for clickyboxes to work properly -->
         <div>
-            {% comment %} Accordion Label for Customizer {% endcomment %}
-            <label class="accordion chevron" for="option-customize">{{ product.options.size | plus: 1 }}. Customize</label>
-  
-            {% comment %} Accordion Panel for Customizer {% endcomment %}
-            <div class="panel custom-options">
- 
+          {% comment %} Accordion Label for Customizer {% endcomment %}
+          <label class="accordion chevron front-back" for="option-customize" >
+            {{- product.options.size | plus: 1 }}. Customize</label
+          >
+    
+          {% comment %} Accordion Panel for Customizer {% endcomment %}
+          <div class="panel custom-options">
+            {% comment %} Options {% endcomment %}
+            {% comment %}
+              Notes:
+              - This select box stays in the code and clickybox adds the optins with with checkmarks
+              - This select box does not add anything to the shopping cart
+            {% endcomment %}
 
-                {% comment %} Options {% endcomment %}
-                {% comment %} 
-                    Notes:
-                    - This select box stays in the code and clickybox adds the optins with with checkmarks
-                    - This select box does not add anything to the shopping cart
-                {% endcomment %}
-                
-                <select id="option-customize">
+            <select id="option-customize">
+              {% if product.tags contains 'Handwriting' %}
+                <option value="handwriting">Handwriting</option>
+              {% endif %}
 
-                    {% if product.tags contains "Handwriting" %}
-                    <option value="handwriting">Handwriting</option>
-                    {% endif %}
+              {% if product.tags contains 'House Font' %}
+                <option value="house font">House Font</option>
+              {% endif %}
 
-                    {% if product.tags contains "House Font" %}
-                    <option value="house font">House Font</option>
-                    {% endif %}
+              {% if product.tags contains 'Soundwave' %}
+                <option value="soundwave">Soundwave</option>
+              {% endif %}
+              {% if product.tags contains 'Roman Numeral Date' %}
+                <option value="roman numeral date">Roman Numeral Date</option>
+              {% endif %}
 
-                    {% if product.tags contains "Soundwave" %}
-                    <option value="soundwave">Soundwave</option>
-                    {% endif %}
-                    {% if product.tags contains "Roman Numeral Date" %}
-                    <option value="roman numeral date">Roman Numeral Date</option>
-                    {% endif %}
+              {% if product.tags contains 'Special Date' %}
+                <option value="special date">Special Date</option>
+              {% endif %}
 
-                    {% if product.tags contains "Special Date" %}
-                    <option value="special date">Special Date</option>
-                    {% endif %}
+              {% if product.tags contains 'Fingerprint' %}
+                <option value="fingerprint">Fingerprint</option>
+              {% endif %}
+              {% if product.tags contains 'None' %}
+                <option value="none">None</option>
+              {% endif %}
+       
 
-                    {% if product.tags contains "Fingerprint" %}
-                    <option value="fingerprint">Fingerprint</option>
-                    {% endif %}
+              <!-- <option value="font-house">House Font</option> -->
+            </select>
 
-                    <!-- <option value="font-house">House Font</option> -->
-                </select>
-                
-                <!-- Custom Features: Content -->
-                <!-- Custom Features: Content -->
-                <!-- Custom Features: Content -->
+            <!-- Custom Features: Content -->
+            <!-- Custom Features: Content -->
+            <!-- Custom Features: Content -->
 
-                {% if hasCustomOption contains 'Handwriting' %}
-                <!-- HANDWRITING -->
-                  
-                <div class="custom-feature-ui-single" data-type="upload-lift" data-name="handwriting">
-                    {% comment %} Upload-Lift widget element container {% endcomment %}
-                    <div id="uploadlift-handwriting"></div>
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
+            {% if hasCustomOption contains 'Handwriting' %}
+              <!-- HANDWRITING -->
+
+              <div class="custom-feature-ui-single" data-type="upload-lift" data-name="handwriting">
+                {% comment %} Upload-Lift widget element container {% endcomment %}
+                <div id="uploadlift-handwriting"></div>
+                <div class="custom-feature-ui-single__form-buttons">
+                  <div class="button cancel">Cancel</div>
                 </div>
-                {% endif %}
+              </div>
+            {% endif %}
 
-                {% if hasCustomOption contains 'House Font' %}
-                <!-- HOUSEFONT -->
-                <div class="custom-feature-ui-single" data-type="standard" data-name="house font">
-                    <input type="text" id="house-font-input" placeholder="Enter your text" />
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
+            {% if hasCustomOption contains 'House Font' %}
+              <!-- HOUSEFONT -->
+              <div class="custom-feature-ui-single" data-type="standard" data-name="house font">
+                <input type="text" id="house-font-input" class="keys-input-back" placeholder="Enter your text">
+                            <div class="customizer-keyboard">
+                                    <div class="alphabetic-keys">
+         <button type="button" class="key-back">A</button>
+        <button type="button" class="key-back">B</button>
+        <button type="button" class="key-back">c</button>
+        <button type="button" class="key-back">D</button>
+        <button type="button" class="key-back">E</button>
+        <button type="button" class="key-back">F</button>
+       <button type="button" class="key-back">G</button>
+         <button type="button" class="key-back">H</button>
+        <button type="button" class="key-back">I</button>
+        <button type="button" class="key-back">J</button>
+        <button type="button" class="key-back">K</button>
+        <button type="button" class="key-back">L</button>
+        <button type="button" class="key-back">M</button>
+        <button type="button" class="key-back">O</button>
+        <button type="button" class="key-back">P</button>
+        <button type="button" class="key-back">Q</button>
+        <button type="button" class="key-back">R</button>
+        <button type="button" class="key-back">S</button>
+        <button type="button" class="key-back">T</button>
+        <button type="button" class="key-back">U</button>
+        <button type="button" class="key-back">V</button>
+        <button type="button" class="key-back">W</button>
+        <button type="button" class="key-back">X</button>
+        <button type="button" class="key-back">Y</button>
+        <button type="button" class="key-back">Z</button>
                 </div>
-                {% endif %}
-
-                {% if hasCustomOption contains 'Soundwave' %}
-                <!-- SOUNDWAVE -->
-                <div class="custom-feature-ui-single" data-type="upload-lift" data-name="soundwave">
-                    
-                    <div class="buttons_container">
-                        <button type="button" id="soundwave-select-button">Select <!-- Image or --> audio file</button>
-                    </div>
-
-                    <!-- Wavesurfer Image (Initial Audio File Visual) -->
-                    <div id="waveform">
-                        <p class="label hide">Original</p>
-                    </div>
-
-                    <!-- Initial Audio File (hidden) -->
-                    <input type="file" name="soundwave-audio-file" accept="audio/*" />
-
-                    <!-- UploadLift image upload (hidden) -->
-                    <!--
-                    <div id="uploadlift-wrapper">
-                        <!- This is added dynamically so that when the page refreshes it doesnt load an empty file ->
-                    </div>
-                    -->
-
-                    <!-- Upload lift Widget -->
-                    <div id="uploadlift-soundwave" class="hide">
-                        <p class="label">Final</p>
-                    </div>
-
-                    <!-- Not used -->
-                    <!-- 
-                    <div class="result-image loader-parent">
-                        <!- Custom Image of the final resutl after Uploaded with Uplift ->
-                        <img id="uploadlift-soundwave-loader" class="no-waveform" src="" />
-                    </div>
-                    -->
-                    
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
-
-                    <div class="note">Note: If image comes up empty, try a smaller file</div>
-
-                    <img class="loading-ajax" src="{{ 'loading.gif' | asset_url }}" />
-
+                  <div class="numeric-keys">
+                     <button type="button" class="key-back">0</button>
+                      <button type="button" class="key-back">1</button>
+                      <button type="button" class="key-back">2</button>
+                      <button type="button" class="key-back">3</button>
+                      <button type="button" class="key-back">4</button>
+                      <button type="button" class="key-back">5</button>
+                      <button type="button" class="key-back">6</button>
+                      <button type="button" class="key-back">7</button>
+                      <button type="button" class="key-back">8</button>
+                      <button type="button" class="key-back">9</button>
+                  </div>
+                  <div class="symbolic-keys">
+                     <button type="button" class="key-back">*</button>
+                     <button type="button" class="key-back">/</button>
+                     <button type="button" class="key-back">!</button>
+                      <button type="button" class="key-back">@</button>
+                      <button type="button" class="key-back">#</button>
+                      <button type="button" class="key-back">$</button>
+                  </div>
+                   </div>
+                <div class="custom-feature-ui-single__form-buttons">
+                  <div class="button cancel">Cancel</div>
                 </div>
-                {% endif %}
+              </div>
+            {% endif %}
 
-                {% if hasCustomOption contains 'Roman Numeral Date' %}
-                <!-- ROMAN NUMERALS -->
-                <div class="custom-feature-ui-single" data-type="standard" data-name="roman numeral date">
-                    
-                    <div class="custom-feature-ui-single__form-inputs">
-                        <label>Enter the date</label>
-                        <input type="date" name="date" placeholder="MM / DD / YYYY" pattern="\d{2}-\d{2}-\d{4}">
-                    </div>
-
-                    <div class="custom-feature-ui-single__result">
-                        <input type="text" id="roman_numerals_date_result" disabled />
-                    </div>
-
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
-
+            {% if hasCustomOption contains 'Soundwave' %}
+              <!-- SOUNDWAVE -->
+              <div class="custom-feature-ui-single" data-type="upload-lift" data-name="soundwave">
+                <div class="buttons_container">
+                  <button type="button" id="soundwave-select-button">
+                    Select
+                    <!-- Image or -->
+                    audio file
+                  </button>
                 </div>
-                {% endif %}
 
-                {% if hasCustomOption contains 'Special Date' %}
-                <!-- SPECIAL DATE -->
-                <div class="custom-feature-ui-single" data-type="standard" data-name="special date">
-                    
-                    <div class="custom-feature-ui-single__form-inputs">
-                        <input type="text" name="special-date" placeholder="Your special date" max="20" />
-                        <br />
-                        <div style="margin: 0.5em 0 0;">Up to 20 Characters</div>
-                    </div>
-
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
-
+                <!-- Wavesurfer Image (Initial Audio File Visual) -->
+                <div id="waveform">
+                  <p class="label hide">Original</p>
                 </div>
-                <!-- END Custom Features -->
-                {% endif %}
 
-              {% if hasCustomOption contains 'Fingerprint' %}
-                <!-- Fingerprint -->
-                <div class="custom-feature-ui-single" data-type="upload-lift" data-name="fingerprint">
-                    {% comment %} Upload-Lift widget element container {% endcomment %}
-                    <div id="uploadlift-handwriting"></div>
-                    <div class="custom-feature-ui-single__form-buttons">
-                        <div class="button cancel">Cancel</div>
-                    </div>
+                <!-- Initial Audio File (hidden) -->
+                <input type="file" name="soundwave-audio-file" accept="audio/*">
+
+                <!-- UploadLift image upload (hidden) -->
+                <!--
+                  <div id="uploadlift-wrapper">
+                      <!- This is added dynamically so that when the page refreshes it doesnt load an empty file ->
+                  </div>
+                -->
+
+                <!-- Upload lift Widget -->
+                <div id="uploadlift-soundwave" class="hide">
+                  <p class="label">Final</p>
                 </div>
-                <!-- END Custom Features -->
-                {% endif %}
-            
+
+                <!-- Not used -->
+                <!--
+                  <div class="result-image loader-parent">
+                      <!- Custom Image of the final resutl after Uploaded with Uplift ->
+                      <img id="uploadlift-soundwave-loader" class="no-waveform" src="" />
+                  </div>
+                -->
+
+                <div class="custom-feature-ui-single__form-buttons">
+                  <div class="button cancel">Cancel</div>
+                </div>
+
+                <div class="note">Note: If image comes up empty, try a smaller file</div>
+
+                <img class="loading-ajax" src="{{ 'loading.gif' | asset_url }}">
+              </div>
+            {% endif %}
+
+            {% if hasCustomOption contains 'Roman Numeral Date' %}
+              <!-- ROMAN NUMERALS -->
+              <div class="custom-feature-ui-single" data-type="standard" data-name="roman numeral date">
+                <div class="custom-feature-ui-single__form-inputs">
+                  <label>Enter the date</label>
+                  <input type="date" name="date" placeholder="MM / DD / YYYY" pattern="\d{2}-\d{2}-\d{4}">
+                </div>
+
+                <div class="custom-feature-ui-single__result">
+                  <input type="text" id="roman_numerals_date_result" disabled>
+                </div>
+
+                <div class="custom-feature-ui-single__form-buttons">
+                  <div class="button cancel">Cancel</div>
+                </div>
+              </div>
+            {% endif %}
+
+            {% if hasCustomOption contains 'Special Date' %}
+              <!-- SPECIAL DATE -->
+              <div class="custom-feature-ui-single" data-type="standard" data-name="special date">
+                <div class="custom-feature-ui-single__form-inputs">
+                  <input type="text" name="special-date" placeholder="Your special date" max="20">
+                  <br>
+                  <div style="margin: 0.5em 0 0;">Up to 20 Characters</div>
+                </div>
+
+                <div class="custom-feature-ui-single__form-buttons">
+                  <div class="button cancel">Cancel</div>
+                </div>
+              </div>
+              <!-- END Custom Features -->
+            {% endif %}
+
+            {% if hasCustomOption contains 'Fingerprint' %}
+              <!-- Fingerprint -->
+              <div class="custom-feature-ui-single" data-type="upload-lift" data-name="fingerprint">
+                {% comment %} Upload-Lift widget element container {% endcomment %}
+                <div id="uploadlift-handwriting"></div>
+                <div class="custom-feature-ui-single__form-buttons">
+                  <div class="button cancel">Cancel</div>
+                </div>
+              </div>
+              <!-- END Custom Features -->
+            {% endif %}
+      {% if hasCustomOption contains 'None' %}
+            <!-- None -->
+            <div class="custom-feature-ui-single" data-type="none" data-name="none">
+              <div class="custom-feature-ui-single__form-buttons">
+                <div class="button cancel">Cancel</div>
+              </div>
             </div>
+            <!-- END Custom Features -->
+          {% endif %}
 
+          </div>
         </div>
-
+      </div>
     </div>
-</div>
 
-<input id="customization" name="properties[none]" value="" >
+    <input id="customization" name="properties[none]" value="">
+  {% endif %}
+{% endif %}
 
+{% if product.tags contains 'Front' %}
+  <script>
+  
+       $('.front').html('3. Front ');
+    $('.product-section .customizer').addClass('active');
+    
+    const inputTextF = $('.keys-input-front');
+      var elementsF = '';
+      $('.key').on('click', function (e) {
+        if(inputTextF.val() == ""){
+           elementsF = $(this).html();
+        }else{
+         elementsF += $(this).html();
+        }       
+        inputTextF.val(elementsF);
+    });
+    
+  </script>
 {% endif %}
+
+{% if product.tags contains 'Front-Back' %}
+  <script>
+    $('.front-back').html('4. Back');
+    $('.product-section .customizer').addClass('active');
+
+    
+        const inputTextB = $('.keys-input-back');
+      var elementsB = '';
+      $('.key-back').on('click', function (e) {
+        if(inputTextB.val() == ""){
+           elementsB = $(this).html();
+        }else{
+         elementsB += $(this).html();
+        }       
+        inputTextB.val(elementsB);
+    });
+  
+  </script>
 {% endif %}
+
+<script>
+  
+</script>
 
 <style>
   label.accordion.chevron.active a {

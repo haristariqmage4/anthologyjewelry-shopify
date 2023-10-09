@@ -2991,9 +2991,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     theme.OptionManager.initProductOptions($('[name="id"]', $form)); // Product form button-options
 
     var toMakeClicky = ',' + $form.find('.option-selectors').data('box-options') + ',';
-    var $clickies = $('.selector-wrapper:not(.has-clickyboxes) select', $form).filter(function () {
-      return toMakeClicky.indexOf(',' + $(this).closest('.selector-wrapper').find('label').html() + ',') >= 0;
-    }).clickyBoxes().parent().addClass('has-clickyboxes'); // If we have clicky boxes, add the disabled-state to options that have no valid variants
+    var $clickies = $('.selector-wrapper:not(.has-clickyboxes) select', $form).clickyBoxes().parent().addClass('has-clickyboxes'); // If we have clicky boxes, add the disabled-state to options that have no valid variants
 
     if ($clickies.length > 0) {
       var productData = theme.OptionManager.getProductData($form); // each option
