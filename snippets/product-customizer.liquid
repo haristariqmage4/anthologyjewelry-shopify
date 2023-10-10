@@ -6,7 +6,7 @@
 {% assign hasCustomOption = '' %}
 
 {% comment %} All possible custom options {% endcomment %}
-{% assign custom_options = 'Handwriting,House Font,Soundwave,Roman Numeral Date,Special Date,Fingerprint,None'
+{% assign custom_options = 'Handwriting,House Font,Initials,Soundwave,Roman Numeral Date,Special Date,Fingerprint,None'
   | split: ','
 %}
 
@@ -44,6 +44,10 @@
 
             {% if product.tags contains 'House Font' %}
               <option value="house font">House Font</option>
+            {% endif %}
+
+             {% if product.tags contains 'Initials' %}
+              <option value="initials">Initials</option>
             {% endif %}
 
             {% if product.tags contains 'Soundwave' %}
@@ -88,8 +92,18 @@
           {% if hasCustomOption contains 'House Font' %}
             <!-- HOUSEFONT -->
             <div class="custom-feature-ui-single" data-type="standard" data-name="house font">
-              <input type="text" id="house-font-input" class="keys-input-front" placeholder="Enter your text">
-                          <div class="customizer-keyboard">
+              <input type="text" id="house-font-input" placeholder="Enter your text">
+       
+              <div class="custom-feature-ui-single__form-buttons">
+                <div class="button cancel">Cancel</div>
+              </div>        
+            </div>
+          {% endif %}
+
+            {% if hasCustomOption contains 'Initials' %}
+                   <div class="custom-feature-ui-single" data-type="standard" data-name="initials">
+                       <input type="text"  class="keys-input-front" maxlength="4" placeholder="Enter your text">
+                                        <div class="customizer-keyboard">
                                     <div class="alphabetic-keys">
          <button type="button" class="key">A</button>
         <button type="button" class="key">B</button>
@@ -138,11 +152,11 @@
                       <button type="button" class="key">$</button>
                   </div>
                    </div>
-              <div class="custom-feature-ui-single__form-buttons">
-                <div class="button cancel">Cancel</div>
-              </div>        
-            </div>
-          {% endif %}
+                     <div class="custom-feature-ui-single__form-buttons">
+                        <div class="button cancel">Cancel</div>
+                      </div>  
+                   </div>
+            {% endif %}
 
           {% if hasCustomOption contains 'Soundwave' %}
             <!-- SOUNDWAVE -->
@@ -287,6 +301,10 @@
                 <option value="house font">House Font</option>
               {% endif %}
 
+             {% if product.tags contains 'Initials' %}
+                      <option value="initials">Initials</option>
+            {% endif %}
+
               {% if product.tags contains 'Soundwave' %}
                 <option value="soundwave">Soundwave</option>
               {% endif %}
@@ -328,8 +346,18 @@
             {% if hasCustomOption contains 'House Font' %}
               <!-- HOUSEFONT -->
               <div class="custom-feature-ui-single" data-type="standard" data-name="house font">
-                <input type="text" id="house-font-input" class="keys-input-back" placeholder="Enter your text">
-                            <div class="customizer-keyboard">
+                <input type="text" id="house-font-input" placeholder="Enter your text">
+             
+                <div class="custom-feature-ui-single__form-buttons">
+                  <div class="button cancel">Cancel</div>
+                </div>
+              </div>
+            {% endif %}
+
+              {% if hasCustomOption contains 'Initials' %}
+                  <div class="custom-feature-ui-single" data-type="standard" data-name="initials">
+                    <input type="text" class="keys-input-back" maxlength="4" placeholder="Enter your text">
+                                   <div class="customizer-keyboard">
                                     <div class="alphabetic-keys">
          <button type="button" class="key-back">A</button>
         <button type="button" class="key-back">B</button>
@@ -378,11 +406,11 @@
                       <button type="button" class="key-back">$</button>
                   </div>
                    </div>
-                <div class="custom-feature-ui-single__form-buttons">
-                  <div class="button cancel">Cancel</div>
-                </div>
-              </div>
-            {% endif %}
+                     <div class="custom-feature-ui-single__form-buttons">
+                        <div class="button cancel">Cancel</div>
+                    </div>
+                  </div>
+                {% endif %}
 
             {% if hasCustomOption contains 'Soundwave' %}
               <!-- SOUNDWAVE -->
@@ -506,6 +534,9 @@
     const inputTextF = $('.keys-input-front');
       var elementsF = '';
       $('.key').on('click', function (e) {
+         if(inputTextF.val().length > 3){
+          return;
+        }
         if(inputTextF.val() == ""){
            elementsF = $(this).html();
         }else{
@@ -526,6 +557,10 @@
         const inputTextB = $('.keys-input-back');
       var elementsB = '';
       $('.key-back').on('click', function (e) {
+        if(inputTextB.val().length > 3){
+          return;
+        }
+        console.log(inputTextB.val().length);
         if(inputTextB.val() == ""){
            elementsB = $(this).html();
         }else{
